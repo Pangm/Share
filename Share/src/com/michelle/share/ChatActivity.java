@@ -81,7 +81,6 @@ public class ChatActivity extends Activity {
 				}
 			}
 		});
-		
 		mgsText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
 			
 			@Override
