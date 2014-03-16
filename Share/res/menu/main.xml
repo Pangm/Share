@@ -1,0 +1,21 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+
+	<item 
+	    android:id="@+id/atn_direct_enable"
+	    android:icon="@drawable/ic_action_on_off"
+	    android:title="@string/atn_enable_p2p"
+	    android:showAsAction="ifRoom|withText"/>
+	
+	<item
+	    android:id="@+id/atn_direct_discover"
+	    android:icon="@drawable/ic_action_discover"
+	    android:title="@string/atn_discover_peers"
+	    android:showAsAction="ifRoom|withText"/>
+	
+    <item
+        android:id="@+id/atn_settings"
+        android:orderInCategory="100"
+        android:showAsAction="never"
+        android:title="@string/atn_settings"/>
+
+</menu>

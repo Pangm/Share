@@ -1,0 +1,77 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/chat_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/chat_bg"
+    android:orientation="vertical"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context=".DialogActivity" >
+
+    <ListView
+        android:id="@+id/chat_list"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1.0"
+        android:background="@null"
+        android:cacheColorHint="#00000000"
+        android:divider="@null"
+        android:transcriptMode="alwaysScroll" >
+
+    </ListView>
+
+    <RelativeLayout
+        android:id="@+id/msg_send_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.03"
+        android:background="@color/chat_layout_bg"
+        android:gravity="left" >
+
+        <ImageView
+            android:id="@+id/file_imgview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="15dp"
+            android:src="@drawable/ic_menu_file" />
+
+        <EditText
+            android:id="@+id/msg_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="12dp"
+            android:layout_toRightOf="@+id/file_imgview"
+            android:background="@drawable/msg_text_bg"
+            android:ems="8"
+            android:maxLines="2"
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp" />
+
+        <Button
+            android:id="@+id/btn_send"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="13dp"
+            android:layout_toRightOf="@+id/msg_text"
+            android:background="@drawable/send_btn"
+            android:text="@string/send_btn_content"
+            android:textColor="@color/white"
+            android:width="3dp" />
+    </RelativeLayout>
+
+    <GridView
+        android:id="@+id/file_units"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:numColumns="4"
+        android:visibility="gone" >
+
+    </GridView>
+
+</LinearLayout>
+

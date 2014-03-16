@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Share</string>
+    <string name="atn_settings">Settings</string>
+    <string name="title_section1">好友</string>
+    <string name="title_section2">个人信息</string>
+    <string name="title_section3">历史记录</string>
+    <string name="atn_discover_peers">搜索设备</string>
+    <string name="atn_enable_p2p">设置设备</string>
+    <string name="empty_message">没找到任何设备。请从 Action Bar 打开 P2P 并且开始搜索 。</string>
+    <string name="p2p_off_warning">P2P 没有打开。请Enable P2P。</string>
+    <string name="empty"></string>
+    <string name="yes">yes</string>
+    <string name="no">no</string>
+    <string name="group_owner_text">"Am I the Group Owner? "</string>
+    <string name="client_text">This device will act as a client. Click on Gallery button to pick a local(stored) file</string>
+    <string name="title_activity_chat">Chat</string>
+    <string name="action_settings">Settings</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="send_btn_content">Send</string>
+
+</resources>
