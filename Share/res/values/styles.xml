@@ -17,7 +17,7 @@
         <!-- All customizations that are NOT specific to a particular API-level can go here. -->
     </style>
     
-	 <style name="ChatUISplit">  
+	<style name="ChatUISplit">  
         <item name="android:textSize">13.0dip</item>  
         <item name="android:textColor">#ff56616c</item>  
         <item name="android:gravity">center_horizontal</item>  
