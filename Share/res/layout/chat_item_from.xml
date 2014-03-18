@@ -3,9 +3,9 @@
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:paddingTop="6.0dip"
     android:paddingLeft="6.0dip"
-    android:paddingRight="6.0dip" >
+    android:paddingRight="6.0dip"
+    android:paddingTop="6.0dip" >
 
     <TextView
         android:id="@+id/chat_time_tv"
@@ -19,16 +19,20 @@
         android:textColor="@color/chat_time_bg"
         android:visibility="visible" />
 
-    <LinearLayout
+    <RelativeLayout
+        android:id="@+id/RelativeLayout1"
         android:layout_width="wrap_content"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:orientation="horizontal" >
 
         <ImageView
             android:id="@+id/chat_from"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
             android:src="@drawable/avatar_to"
+             android:adjustViewBounds="true"
             android:visibility="visible" />
 
         <TextView
@@ -36,11 +40,14 @@
             style="@style/ChatUIText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@+id/chat_from"
             android:autoLink="web"
             android:background="@drawable/chatfrom_bg"
             android:paddingLeft="5dp"
             android:paddingRight="5dp"
             android:visibility="visible" />
-    </LinearLayout>
+
+    </RelativeLayout>
 
 </LinearLayout>
