@@ -1,41 +1,59 @@
 package com.michelle.share;
 
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 
 import com.michelle.share.FriendsFragment.DeviceActionListener;
+import com.michelle.share.UserInfoFragment.UserInfoFragListener;
+import com.michelle.share.socket.ShareChatService;
+import com.michelle.share.socket.ShareChatService.MyBinder;
 
 import android.app.ActionBar;
 import android.app.FragmentTransaction;
+import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.ServiceConnection;
 import android.net.wifi.p2p.WifiP2pConfig;
 import android.net.wifi.p2p.WifiP2pDevice;
-import android.net.wifi.p2p.WifiP2pDeviceList;
+import android.net.wifi.p2p.WifiP2pInfo;
 import android.net.wifi.p2p.WifiP2pManager;
 import android.net.wifi.p2p.WifiP2pManager.ActionListener;
 import android.net.wifi.p2p.WifiP2pManager.Channel;
 import android.net.wifi.p2p.WifiP2pManager.ChannelListener;
-import android.net.wifi.p2p.WifiP2pManager.PeerListListener;
+import android.net.wifi.p2p.WifiP2pManager.ConnectionInfoListener;
+import android.net.wifi.p2p.WifiP2pManager.DnsSdServiceResponseListener;
+import android.net.wifi.p2p.WifiP2pManager.DnsSdTxtRecordListener;
+import android.net.wifi.p2p.nsd.WifiP2pDnsSdServiceInfo;
+import android.net.wifi.p2p.nsd.WifiP2pDnsSdServiceRequest;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.provider.Settings;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.app.FragmentTabHost;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.Toast;
 
 public class MainActivity extends FragmentActivity implements
-		ActionBar.TabListener, ChannelListener, DeviceActionListener {
+		ActionBar.TabListener, ChannelListener, DeviceActionListener,
+		ConnectionInfoListener, UserInfoFragListener {
 
 	public static final String TAG = "Share App";
+
+	public static final String TXTRECORD_PROP_AVAILABLE = "available";
+    public static final String SERVICE_INSTANCE = "_wifidemotest";
+    public static final String SERVICE_REG_TYPE = "_presence._tcp";
+	
+	private WifiP2pDnsSdServiceRequest serviceRequest;
 
 	/**
 	 * The {@link android.support.v4.view.PagerAdapter} that will provide
@@ -63,7 +81,12 @@ public class MainActivity extends FragmentActivity implements
 	private FriendsFragment mFriendsFrag = null;
 	private UserInfoFragment mUserInfoFrag = null;
 	private HistoryFilesFragment mHistoryFilesFrag = null;
+	private WifiP2pDevice device = null;
+	private WifiP2pInfo info = null;
+	private ProgressDialog progressDialog = null;
 
+	private MyBinder myBinder = null;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -71,6 +94,19 @@ public class MainActivity extends FragmentActivity implements
 
 		// add necessary intent values to be matched.
 
+		//unbindService(null);
+		Intent bindIntent = new Intent(this, ShareChatService.class);  
+        bindService(bindIntent, new ServiceConnection() {  
+        	  
+            @Override  
+            public void onServiceDisconnected(ComponentName name) {  
+            }
+
+			@Override
+			public void onServiceConnected(ComponentName name, IBinder service) {
+				myBinder = (MyBinder) service; 
+				
+			}}, BIND_AUTO_CREATE); 
 		intentFilter.addAction(WifiP2pManager.WIFI_P2P_STATE_CHANGED_ACTION);
 		intentFilter.addAction(WifiP2pManager.WIFI_P2P_PEERS_CHANGED_ACTION);
 		intentFilter
@@ -78,9 +114,7 @@ public class MainActivity extends FragmentActivity implements
 		intentFilter
 				.addAction(WifiP2pManager.WIFI_P2P_THIS_DEVICE_CHANGED_ACTION);
 
-		manager = (WifiP2pManager) getSystemService(Context.WIFI_P2P_SERVICE);
-		channel = manager.initialize(this, getMainLooper(), null);
-
+		
 		// Set up the action bar.
 		final ActionBar actionBar = getActionBar();
 		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
@@ -115,6 +149,110 @@ public class MainActivity extends FragmentActivity implements
 					.setText(mSectionsPagerAdapter.getPageTitle(i))
 					.setTabListener(this));
 		}
+		
+		manager = (WifiP2pManager) getSystemService(Context.WIFI_P2P_SERVICE);
+		channel = manager.initialize(this, getMainLooper(), null);
+		startRegistrationAndDiscovery();
+	}
+
+	private void startRegistrationAndDiscovery() {
+		Map<String, String> record = new HashMap<String, String>();
+        record.put(TXTRECORD_PROP_AVAILABLE, "visible");
+
+        WifiP2pDnsSdServiceInfo service = WifiP2pDnsSdServiceInfo.newInstance(
+                SERVICE_INSTANCE, SERVICE_REG_TYPE, record);
+        manager.addLocalService(channel, service, new ActionListener() {
+
+			@Override
+			public void onSuccess() {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void onFailure(int reason) {
+				// TODO Auto-generated method stub
+				
+			}
+        });
+
+        discoverService();
+
+	}
+
+	private void discoverService() {
+		 /*
+         * Register listeners for DNS-SD services. These are callbacks invoked
+         * by the system when a service is actually discovered.
+         */
+
+        manager.setDnsSdResponseListeners(channel,
+                new DnsSdServiceResponseListener() {
+
+					@Override
+					public void onDnsSdServiceAvailable(String instanceName,
+							String registrationType, WifiP2pDevice srcDevice) {
+						// A service has been discovered. Is this our app?
+
+                        if (instanceName.equalsIgnoreCase(SERVICE_INSTANCE)) {
+
+                            // update the UI and add the item the discovered
+                            // device.
+//                            if (fragment != null) {
+//                                WiFiDevicesAdapter adapter = ((WiFiDevicesAdapter) fragment
+//                                        .getListAdapter());
+//                                WiFiP2pService service = new WiFiP2pService();
+//                                service.device = srcDevice;
+//                                service.instanceName = instanceName;
+//                                service.serviceRegistrationType = registrationType;
+//                                adapter.add(service);
+//                                adapter.notifyDataSetChanged();
+//                                Log.d(TAG, "onBonjourServiceAvailable "
+//                                        + instanceName);
+//                            }
+                        }
+					}
+                }, new DnsSdTxtRecordListener() {
+
+                    /**
+                     * A new TXT record is available. Pick up the advertised
+                     * buddy name.
+                     */
+                    @Override
+                    public void onDnsSdTxtRecordAvailable(
+                            String fullDomainName, Map<String, String> record,
+                            WifiP2pDevice device) {
+                        Log.d(TAG,
+                                device.deviceName + " is "
+                                        + record.get(TXTRECORD_PROP_AVAILABLE));
+                    }
+                });
+
+        // After attaching listeners, create a service request and initiate
+        // discovery.
+        serviceRequest = WifiP2pDnsSdServiceRequest.newInstance();
+        manager.addServiceRequest(channel, serviceRequest,
+                new ActionListener() {
+
+                    @Override
+                    public void onSuccess() {
+                    }
+
+                    @Override
+                    public void onFailure(int arg0) {
+                    }
+                });
+        manager.discoverServices(channel, new ActionListener() {
+
+            @Override
+            public void onSuccess() {
+            }
+
+            @Override
+            public void onFailure(int arg0) {
+
+            }
+        });
 	}
 
 	/*
@@ -126,7 +264,6 @@ public class MainActivity extends FragmentActivity implements
 	 */
 	@Override
 	public void onAttachFragment(Fragment fragment) {
-		// TODO Auto-generated method stub
 		if (fragment.getClass() == FriendsFragment.class) {
 			mFriendsFrag = (FriendsFragment) fragment;
 		} else if (fragment.getClass() == UserInfoFragment.class) {
@@ -328,9 +465,11 @@ public class MainActivity extends FragmentActivity implements
 	}
 
 	public void resetData() {
-		FriendsFragment fragmentList = mFriendsFrag;
-		if (fragmentList != null) {
-			fragmentList.clearPeers();
+		if (mFriendsFrag != null) {
+			mFriendsFrag.clearPeers();
+		}
+		if (mUserInfoFrag != null) {
+			mUserInfoFrag.resetViews();
 		}
 	}
 
@@ -351,12 +490,11 @@ public class MainActivity extends FragmentActivity implements
 		 * request
 		 */
 		if (manager != null) {
-			final UserInfoFragment fragment = mUserInfoFrag;
-			if (fragment.getDevice() == null
-					|| fragment.getDevice().status == WifiP2pDevice.CONNECTED) {
+			if (device == null
+					|| device.status == WifiP2pDevice.CONNECTED) {
 				disconnect();
-			} else if (fragment.getDevice().status == WifiP2pDevice.AVAILABLE
-					|| fragment.getDevice().status == WifiP2pDevice.INVITED) {
+			} else if (device.status == WifiP2pDevice.AVAILABLE
+					|| device.status == WifiP2pDevice.INVITED) {
 
 				manager.cancelConnect(channel, new ActionListener() {
 
@@ -383,6 +521,19 @@ public class MainActivity extends FragmentActivity implements
 
 	@Override
 	public void connect(WifiP2pConfig config) {
+		if (serviceRequest != null)
+            manager.removeServiceRequest(channel, serviceRequest,
+                    new ActionListener() {
+
+                        @Override
+                        public void onSuccess() {
+                        }
+
+                        @Override
+                        public void onFailure(int arg0) {
+                        }
+                    });
+		
 		manager.connect(channel, config, new ActionListener() {
 
 			@Override
@@ -413,5 +564,43 @@ public class MainActivity extends FragmentActivity implements
 			}
 
 		});
+		((ShareApplication) getApplication()).setIsConnected(false);
+	}
+	
+	public WifiP2pDevice getDevice() {
+		return device;
+	}
+	
+	/**
+	 * Update User Information at UserInfoFragment
+	 * @param device
+	 */
+	public void updateThisDevice(WifiP2pDevice device) {
+		this.device = device;
+		if (mUserInfoFrag != null && device != null) {
+			mUserInfoFrag.ShowDeviceDetails(device);
+		}
+	}
+
+	@Override
+	public void onConnectionInfoAvailable(WifiP2pInfo info) {
+		if (progressDialog != null && progressDialog.isShowing()) {
+            progressDialog.dismiss();
+        }
+		
+		((ShareApplication) getApplication()).setIsConnected(true);
+		
+        this.info = info;
+        
+        if (myBinder != null) {
+        	myBinder.connect(info);
+        }
+	}
+
+	@Override
+	public void updateUserFragUI() {
+		if (mUserInfoFrag != null && device != null) {
+			mUserInfoFrag.ShowDeviceDetails(device);
+		}
 	}
 }

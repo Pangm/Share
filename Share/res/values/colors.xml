@@ -6,4 +6,5 @@
     <color name="chat_bg">#EFF0F2</color>
     <color name="white">#FFFFFFFF</color>
     <color name="chat_layout_bg">#DCDCDC</color>
+    <color name="chat_time_bg">#FF56616C</color>
 </resources>

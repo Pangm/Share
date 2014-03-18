@@ -6,11 +6,13 @@ import java.util.List;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.net.wifi.WpsInfo;
 import android.net.wifi.p2p.WifiP2pConfig;
 import android.net.wifi.p2p.WifiP2pDevice;
 import android.net.wifi.p2p.WifiP2pDeviceList;
 import android.net.wifi.p2p.WifiP2pManager.PeerListListener;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.ListFragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -28,6 +30,24 @@ public class FriendsFragment extends ListFragment implements PeerListListener{
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
 		this.setListAdapter(new WiFiPeerListAdapter(getActivity(), R.layout.row_friends, peers));
+	}
+
+	/* (non-Javadoc)
+	 * @see android.support.v4.app.Fragment#onPause()
+	 */
+	@Override
+	public void onPause() {
+		// TODO Auto-generated method stub
+		super.onPause();
+	}
+
+	/* (non-Javadoc)
+	 * @see android.support.v4.app.Fragment#onResume()
+	 */
+	@Override
+	public void onResume() {
+		// TODO Auto-generated method stub
+		super.onResume();
 	}
 
 	/**
@@ -49,6 +69,27 @@ public class FriendsFragment extends ListFragment implements PeerListListener{
 	@Override
 	public void onListItemClick(ListView l, View v, int position, long id) {
 		WifiP2pDevice device = (WifiP2pDevice) getListAdapter().getItem(position);
+		
+		WifiP2pConfig config = new WifiP2pConfig();
+        config.deviceAddress = device.deviceAddress;
+        config.wps.setup = WpsInfo.PBC;
+        if (progressDialog != null && progressDialog.isShowing()) {
+            progressDialog.dismiss();
+        }
+        progressDialog = ProgressDialog.show(getActivity(), "Press back to cancel",
+                "Connecting to :" + device.deviceAddress, true, true
+//                new DialogInterface.OnCancelListener() {
+//
+//                    @Override
+//                    public void onCancel(DialogInterface dialog) {
+//                        ((DeviceActionListener) getActivity()).cancelDisconnect();
+//                    }
+//                }
+                );
+        
+        if (!((ShareApplication) getActivity().getApplication()).getIsConnected()) {
+        	((DeviceActionListener) getActivity()).connect(config);
+        }
         ((DeviceActionListener) getActivity()).startChat(device);
 	}
 	
@@ -164,4 +205,9 @@ public class FriendsFragment extends ListFragment implements PeerListListener{
 
         void disconnect();
 	}
+	
+	
+	public interface MessageTarget {
+        public Handler getHandler();
+    }
 }
