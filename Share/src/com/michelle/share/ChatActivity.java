@@ -62,7 +62,7 @@ public class ChatActivity extends Activity {
 		
         receiver = new MyReceiver();
 		IntentFilter filter = new IntentFilter();
-		filter.addAction("android.intent.action.test");
+		filter.addAction("android.intent.action.MSG_RECEIVE");
 		registerReceiver(receiver,filter);
         
 		// set chatList adapter
@@ -94,6 +94,7 @@ public class ChatActivity extends Activity {
 				Time time = new Time("GMT+8");
 				time.setToNow();
 				messages.add(new ChatMessage(ChatMessage.MESSAGE_TO, msg, time));
+				myBinder.sendMsg(msg);
 				chatAdapter.notifyDataSetChanged();
 			}
 		});
