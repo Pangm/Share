@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.app.Application;
+import android.net.wifi.p2p.WifiP2pInfo;
 
 /**
  * @author Weizhu
@@ -16,7 +17,22 @@ public class ShareApplication extends Application {
 
 	private List<ChatMessage> messages;
 	private boolean isConnected = false;
+	private WifiP2pInfo info = null;
 	
+	/**
+	 * @return the info
+	 */
+	public WifiP2pInfo getInfo() {
+		return info;
+	}
+
+	/**
+	 * @param info the info to set
+	 */
+	public void setInfo(WifiP2pInfo info) {
+		this.info = info;
+	}
+
 	/* (non-Javadoc)
 	 * @see android.app.Application#onCreate()
 	 */

@@ -9,15 +9,15 @@ import java.util.concurrent.TimeUnit;
 import android.os.Handler;
 import android.util.Log;
 
-public class GroupOwnerSocketHandler extends Thread {
+public class GroupOwnerMessageSocketHandler extends Thread {
 	ServerSocket socket = null;
     private final int THREAD_COUNT = 10;
     private Handler handler;
     private static final String TAG = "GroupOwnerSocketHandler";
 
-    public GroupOwnerSocketHandler(Handler handler) throws IOException {
+    public GroupOwnerMessageSocketHandler(Handler handler) throws IOException {
         try {
-            socket = new ServerSocket(4545);
+            socket = new ServerSocket(ShareChatService.SERVER_PORT);
             this.handler = handler;
             Log.d("GroupOwnerSocketHandler", "Socket Started");
         } catch (IOException e) {

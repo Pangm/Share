@@ -8,14 +8,14 @@ import java.net.Socket;
 import android.os.Handler;
 import android.util.Log;
 
-public class ClientSocketHandler extends Thread {
+public class ClientMessageSocketHandler extends Thread {
 	private static final String TAG = "ClientSocketHandler";
     private Handler handler;
     private ChatManager chat;
     private InetAddress mAddress;
     private int	port;
 
-    public ClientSocketHandler(Handler handler, InetAddress groupOwnerAddress, int port) {
+    public ClientMessageSocketHandler(Handler handler, InetAddress groupOwnerAddress, int port) {
         this.handler = handler;
         this.mAddress = groupOwnerAddress;
         this.port = port;

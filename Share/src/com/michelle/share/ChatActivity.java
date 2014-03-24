@@ -5,9 +5,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.michelle.share.socket.MsgType;
 import com.michelle.share.socket.ShareChatService;
 import com.michelle.share.socket.ShareChatService.MyBinder;
 
+import android.net.Uri;
+import android.net.wifi.p2p.WifiP2pInfo;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.app.Activity;
@@ -19,6 +22,7 @@ import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.support.v4.app.NavUtils;
 import android.text.format.Time;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -30,9 +34,12 @@ import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
+import android.widget.TextView;
 
 public class ChatActivity extends Activity {
 
+	public static final String TAG = "ChatActivity";
+	protected static final int CHOOSE_FILE_RESULT_CODE = 20;
 	private ListView chatList = null;
 	private ChatAdapter chatAdapter = null;
 	private List<ChatMessage> messages;
@@ -94,7 +101,7 @@ public class ChatActivity extends Activity {
 				Time time = new Time("GMT+8");
 				time.setToNow();
 				messages.add(new ChatMessage(ChatMessage.MESSAGE_TO, msg, time));
-				myBinder.sendMsg(msg);
+				myBinder.sendMsg(MsgType.MESSAGE, msg);				
 				chatAdapter.notifyDataSetChanged();
 			}
 		});
@@ -108,6 +115,13 @@ public class ChatActivity extends Activity {
 			public void onItemClick(AdapterView<?> parent, View view,
 					int position, long id) {
 				fileUnits.setVisibility(View.GONE);
+				TextView text = (TextView) view.findViewById(R.id.file_unit_text);
+				
+				if (text.equals("图片")) {
+					Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+                    intent.setType("image/*");
+                    startActivityForResult(intent, CHOOSE_FILE_RESULT_CODE);
+				}
 			}
 		});
 		
@@ -145,6 +159,15 @@ public class ChatActivity extends Activity {
 		getActionBar().setDisplayHomeAsUpEnabled(true);
 	}
 
+	@Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        // User has picked an image. Transfer it to group owner i.e peer using
+        // FileTransferService.
+        Uri uri = data.getData();
+        Log.d(ChatActivity.TAG, "Intent----------- " + uri);
+    }
+	
 	/* (non-Javadoc)
 	 * @see android.app.Activity#onDestroy()
 	 */
@@ -234,19 +257,17 @@ public class ChatActivity extends Activity {
 	}
 	
 	public class MyReceiver extends BroadcastReceiver {
-		//自定义一个广播接收器
+		
 		@Override
 		public void onReceive(Context context, Intent intent) {
-			// TODO Auto-generated method stub
 			System.out.println("OnReceiver");
 			Bundle bundle=intent.getExtras();
-			String a = bundle.getString("Msg");
+			String msg = bundle.getString("Msg");
+			// notify receive a message. 
 			chatAdapter.notifyDataSetChanged(); 
 		}
 		public MyReceiver(){
 			System.out.println("MyReceiver");
-			//构造函数，做一些初始化工作，本例中无任何作用
-		}
- 
+		} 
 	}
 }

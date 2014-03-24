@@ -82,7 +82,6 @@ public class MainActivity extends FragmentActivity implements
 	private UserInfoFragment mUserInfoFrag = null;
 	private HistoryFilesFragment mHistoryFilesFrag = null;
 	private WifiP2pDevice device = null;
-	private WifiP2pInfo info = null;
 	private ProgressDialog progressDialog = null;
 
 	private MyBinder myBinder = null;
@@ -589,8 +588,6 @@ public class MainActivity extends FragmentActivity implements
         }
 		
 		((ShareApplication) getApplication()).setIsConnected(true);
-		
-        this.info = info;
         
         if (myBinder != null) {
         	myBinder.connect(info);

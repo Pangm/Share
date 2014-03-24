@@ -43,6 +43,9 @@
         <service 
             android:name="com.michelle.share.socket.ShareChatService">
         </service>
+        <service 
+            android:name="com.michelle.share.socket.FileTransferService">
+        </service>
     </application>
 
 </manifest>

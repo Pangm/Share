@@ -90,8 +90,28 @@ public class ShareChatService extends Service implements Handler.Callback,
 	
 	public class MyBinder extends Binder {  
 		  
-		public void sendMsg(String msg) {
-			chatManager.write(msg.getBytes());
+		public void sendMsg(MsgType type, Object obj) {
+			
+			switch (type) {
+			case MESSAGE:
+				chatManager.write(((String) obj).getBytes());
+				break;
+			case CONTACT:
+				break;
+			case PHOTO:
+				break;
+			case MUSIC:
+				break;
+			case VIDEO:
+				break;
+			case APP:
+				break;
+			case OTHER_FILE:
+				break;
+			default:
+				break;
+				
+			}
 		}
 		
 	    public void  connect(WifiP2pInfo p2pInfo) {
@@ -100,7 +120,7 @@ public class ShareChatService extends Service implements Handler.Callback,
 	    	if (p2pInfo.isGroupOwner) {
 	            Log.d(TAG, "Connected as group owner");
 	            try {
-	                handler = new GroupOwnerSocketHandler(
+	                handler = new GroupOwnerMessageSocketHandler(
 	                        getHandler());
 	                handler.start();
 	            } catch (IOException e) {
@@ -110,7 +130,7 @@ public class ShareChatService extends Service implements Handler.Callback,
 	            }
 	        } else {
 	            Log.d(TAG, "Connected as peer");
-	            handler = new ClientSocketHandler(
+	            handler = new ClientMessageSocketHandler(
 	                    getHandler(),
 	                    p2pInfo.groupOwnerAddress,
 	                    ShareChatService.SERVER_PORT);
