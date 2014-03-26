@@ -1,9 +1,11 @@
 package com.michelle.share.socket;
 
+import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.Socket;
 import java.util.Arrays;
@@ -54,7 +56,7 @@ public class FileTransferManager implements Runnable {
 			int bytes;
 			handler.obtainMessage(ShareChatService.FILE_TRANSFER_HANDLE, this)
 					.sendToTarget();
-			
+			DataInputStream dataInputStream = new DataInputStream(iStream);
 			while (true) {
 //				try {
 //					// Read from the InputStream
@@ -70,14 +72,15 @@ public class FileTransferManager implements Runnable {
 //				} catch (IOException e) {
 //					Log.e(TAG, "disconnected", e);
 //				}
-				
 				try {
 					// Read from the InputStream
 					Log.d(FileTransferManager.TAG, "Server: connection done");
+					String fileName = dataInputStream.readUTF();
+					
 					final File f = new File(
 							Environment.getExternalStorageDirectory() + "/"
 									+ "MichelleShare" + "/wifip2pshared-"
-									+ "test" + ".jpg");
+									+ fileName + ".jpg");
 //									+ System.currentTimeMillis() + ".jpg");
 
 					File dirs = new File(f.getParent());
@@ -91,11 +94,17 @@ public class FileTransferManager implements Runnable {
 					FileOutputStream out = new FileOutputStream(f);
 					int len;
 					try {
-						while ((len = iStream.read(buffer)) != -1) {
-							if (len == 1024 && compareBytes(endBuf, buffer)) {
-								break;
-							}
-							out.write(buffer, 0, len);	
+//						while ((len = iStream.read(buffer)) != -1) {
+//							if (len == 1024 && compareBytes(endBuf, buffer)) {
+//								break;
+//							}
+//							out.write(buffer, 0, len);	
+//						}
+						int byteCount = -1;
+						byte buf[] = new byte[1024 * 60];
+						while ((byteCount = dataInputStream.readInt()) != 0) {
+							dataInputStream.readFully(buf, 0, byteCount);
+							out.write(buf, 0, byteCount);
 						}
 						out.close();
 					} catch (IOException e) {

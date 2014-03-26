@@ -1,9 +1,12 @@
 package com.michelle.share.socket;
 
+import java.io.DataOutputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.PrintStream;
 import java.util.Arrays;
 
 import com.michelle.share.ChatActivity;
@@ -39,6 +42,9 @@ public class FileTransferService extends IntentService {
             
             try {
             	OutputStream oStream = ((ShareApplication) getApplication()).getoStream();
+            	DataOutputStream dataOutStream = new DataOutputStream(oStream);
+            	dataOutStream.writeUTF("my pictrue" + System.currentTimeMillis());
+            	dataOutStream.flush();
                 ContentResolver cr = context.getContentResolver();
                 InputStream iStream = null;
                 try {
@@ -49,14 +55,18 @@ public class FileTransferService extends IntentService {
                 
                 //FileTransferManager.copyFile(iStream, oStream);
                 
-                byte buf[] = new byte[1024];
-        		int len;
+                byte buf[] = new byte[1024 * 60];
+        		int byteCount = 0;
         		try {
-        			while ((len = iStream.read(buf)) != -1) {
-        				oStream.write(buf, 0, len);
+        			while ((byteCount = iStream.read(buf)) != -1) {
+        				//oStream.write(buf, 0, len);
+        				dataOutStream.writeInt(byteCount);
+        				dataOutStream.flush();
+        				dataOutStream.write(buf, 0, byteCount);
+        				dataOutStream.flush();
         			}
-        			Arrays.fill(buf, (byte) 0);
-        			oStream.write(buf);
+        			dataOutStream.writeInt(0);
+        			dataOutStream.flush();
         			iStream.close();
         		} catch (IOException e) {
         			Log.d(TAG, e.toString());
