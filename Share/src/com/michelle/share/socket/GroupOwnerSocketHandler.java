@@ -9,15 +9,17 @@ import java.util.concurrent.TimeUnit;
 import android.os.Handler;
 import android.util.Log;
 
-public class GroupOwnerMessageSocketHandler extends Thread {
+public class GroupOwnerSocketHandler extends Thread {
 	ServerSocket socket = null;
     private final int THREAD_COUNT = 10;
     private Handler handler;
     private static final String TAG = "GroupOwnerSocketHandler";
+    private int type = 0;
 
-    public GroupOwnerMessageSocketHandler(Handler handler) throws IOException {
+    public GroupOwnerSocketHandler(Handler handler, int port, int type) throws IOException {
+    	this.type = type;
         try {
-            socket = new ServerSocket(ShareChatService.SERVER_PORT);
+            socket = new ServerSocket(port);
             this.handler = handler;
             Log.d("GroupOwnerSocketHandler", "Socket Started");
         } catch (IOException e) {
@@ -41,7 +43,11 @@ public class GroupOwnerMessageSocketHandler extends Thread {
             try {
                 // A blocking operation. Initiate a ChatManager instance when
                 // there is a new connection
-                pool.execute(new ChatManager(socket.accept(), handler));
+            	if (type == 0) {
+                	pool.execute(new ChatManager(socket.accept(), handler));
+                } else if (type == 1) {
+                	pool.execute(new FileTransferManager(socket.accept(), handler));
+                }
                 Log.d(TAG, "Launching the I/O handler");
 
             } catch (IOException e) {

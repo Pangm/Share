@@ -33,7 +33,7 @@ public class ChatManager implements Runnable {
 			oStream = socket.getOutputStream();
 			byte[] buffer = new byte[1024];
 			int bytes;
-			handler.obtainMessage(ShareChatService.MY_HANDLE, this)
+			handler.obtainMessage(ShareChatService.CHAT_MSG_HANDLE, this)
 					.sendToTarget();
 
 			while (true) {

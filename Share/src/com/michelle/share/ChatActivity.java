@@ -1,10 +1,13 @@
 package com.michelle.share;
 
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.michelle.share.socket.FileTransferService;
 import com.michelle.share.socket.MsgType;
 import com.michelle.share.socket.ShareChatService;
 import com.michelle.share.socket.ShareChatService.MyBinder;
@@ -13,13 +16,17 @@ import android.net.Uri;
 import android.net.wifi.p2p.WifiP2pInfo;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.provider.ContactsContract;
+import android.provider.MediaStore.MediaColumns;
 import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
+import android.database.Cursor;
 import android.support.v4.app.NavUtils;
 import android.text.format.Time;
 import android.util.Log;
@@ -40,6 +47,10 @@ public class ChatActivity extends Activity {
 
 	public static final String TAG = "ChatActivity";
 	protected static final int CHOOSE_FILE_RESULT_CODE = 20;
+	protected static final int CHOOSE_PHOTO_RESULT_CODE = 21;
+	protected static final int CHOOSE_MUSIC_RESULT_CODE = 22;
+	protected static final int CHOOSE_VIDEO_RESULT_CODE = 23;
+	protected static final int CHOOSE_CONTACT_RESULT_CODE = 24;
 	private ListView chatList = null;
 	private ChatAdapter chatAdapter = null;
 	private List<ChatMessage> messages;
@@ -117,11 +128,25 @@ public class ChatActivity extends Activity {
 				fileUnits.setVisibility(View.GONE);
 				TextView text = (TextView) view.findViewById(R.id.file_unit_text);
 				
-				if (text.equals("图片")) {
+				if (text.getText().equals("图片")) {
 					Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
                     intent.setType("image/*");
-                    startActivityForResult(intent, CHOOSE_FILE_RESULT_CODE);
+                    startActivityForResult(intent, CHOOSE_PHOTO_RESULT_CODE);
+				} else if (text.getText().equals("音乐")) {
+					Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+                    intent.setType("audio/*");
+                    startActivityForResult(intent, CHOOSE_MUSIC_RESULT_CODE);
+				} else if (text.getText().equals("视频")) {
+					Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+	                intent.setType("video/*");
+	                startActivityForResult(intent, CHOOSE_VIDEO_RESULT_CODE);
+				} else if (text.getText().equals("联系人")) {
+					Intent intent = new Intent(Intent.ACTION_PICK);
+					intent.setType(ContactsContract.Contacts.CONTENT_TYPE);
+	                startActivityForResult(intent, CHOOSE_CONTACT_RESULT_CODE);
 				}
+				
+				 
 			}
 		});
 		
@@ -165,7 +190,32 @@ public class ChatActivity extends Activity {
         // User has picked an image. Transfer it to group owner i.e peer using
         // FileTransferService.
         Uri uri = data.getData();
-        Log.d(ChatActivity.TAG, "Intent----------- " + uri);
+        if (requestCode == CHOOSE_PHOTO_RESULT_CODE) {
+        	//myBinder.sendMsg(MsgType.PHOTO, uri.getPath());
+        	
+        	Intent serviceIntent = new Intent(this, FileTransferService.class);
+            serviceIntent.setAction(FileTransferService.ACTION_SEND_FILE);
+            serviceIntent.putExtra(FileTransferService.EXTRAS_FILE_PATH, uri.toString());
+            startService(serviceIntent);
+        }
+//        String filePath;  
+//        String[] filePathColumn = {MediaColumns.DATA};
+//        Log.d(ChatActivity.TAG, "Intent----------- " + uri);
+//        Cursor cursor = getContentResolver().query(data.getData(), filePathColumn, null, null, null);
+//        cursor.moveToFirst();
+//        int columnIndex = cursor.getColumnIndex(filePathColumn[0]);  
+//        filePath = cursor.getString(columnIndex);  
+//        cursor.close();
+//        myBinder.sendFileName(filePath);
+        //myBinder.sendFileName(uri.toString());
+//        Context context = getApplicationContext();
+//        ContentResolver cr = context.getContentResolver();
+//        InputStream is = null;
+//        try {
+//            is = cr.openInputStream(Uri.parse(uri.toString()));
+//        } catch (FileNotFoundException e) {
+//            Log.d(ChatActivity.TAG, e.toString());
+//        }
     }
 	
 	/* (non-Javadoc)
@@ -213,7 +263,7 @@ public class ChatActivity extends Activity {
 		
 		unit = new HashMap<String, Object>();
 		unit.put("unitImg", R.drawable.ic_tel_rom);
-		unit.put("unitText", "手机内存");
+		unit.put("unitText", "联系人");
 		fileUnitsList.add(unit);
 		
 		unit = new HashMap<String, Object>();

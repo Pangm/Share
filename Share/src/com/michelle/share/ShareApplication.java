@@ -3,6 +3,7 @@
  */
 package com.michelle.share;
 
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,7 +19,21 @@ public class ShareApplication extends Application {
 	private List<ChatMessage> messages;
 	private boolean isConnected = false;
 	private WifiP2pInfo info = null;
-	
+	private OutputStream oStream;
+	/**
+	 * @return the oStream
+	 */
+	public OutputStream getoStream() {
+		return oStream;
+	}
+
+	/**
+	 * @param oStream the oStream to set
+	 */
+	public void setoStream(OutputStream oStream) {
+		this.oStream = oStream;
+	}
+
 	/**
 	 * @return the info
 	 */

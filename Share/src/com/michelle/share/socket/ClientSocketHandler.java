@@ -8,17 +8,19 @@ import java.net.Socket;
 import android.os.Handler;
 import android.util.Log;
 
-public class ClientMessageSocketHandler extends Thread {
+public class ClientSocketHandler extends Thread {
 	private static final String TAG = "ClientSocketHandler";
     private Handler handler;
-    private ChatManager chat;
+    private Runnable manager;
     private InetAddress mAddress;
     private int	port;
+    private int type = 0;
 
-    public ClientMessageSocketHandler(Handler handler, InetAddress groupOwnerAddress, int port) {
+    public ClientSocketHandler(Handler handler, InetAddress groupOwnerAddress, int port, int type) {
         this.handler = handler;
         this.mAddress = groupOwnerAddress;
         this.port = port;
+        this.type = type;
     }
 
     @Override
@@ -29,8 +31,13 @@ public class ClientMessageSocketHandler extends Thread {
             socket.connect(new InetSocketAddress(mAddress.getHostAddress(),
             		port), 5000);
             Log.d(TAG, "Launching the I/O handler");
-            chat = new ChatManager(socket, handler);
-            new Thread(chat).start();
+            if (type == 0) {
+            	manager = new ChatManager(socket, handler);
+            } else if (type == 1) {
+            	manager = new FileTransferManager(socket, handler);
+            }
+            
+            new Thread(manager).start();
         } catch (IOException e) {
             e.printStackTrace();
             try {
@@ -42,7 +49,7 @@ public class ClientMessageSocketHandler extends Thread {
         }
     }
 
-    public ChatManager getChat() {
-        return chat;
-    }
+//    public Runnable getChat() {
+//        return manager;
+//    }
 }
