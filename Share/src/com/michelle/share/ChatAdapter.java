@@ -51,7 +51,7 @@ public class ChatAdapter extends BaseAdapter {
 				convertView = LayoutInflater.from(context).inflate(R.layout.chat_item_to, null);
 			}
 
-			holder.text = (TextView) convertView.findViewById(R.id.chatting_content_itv);
+			holder.text = (TextView) convertView.findViewById(R.id.chatting_content_size);
 			holder.time = (TextView) convertView.findViewById(R.id.chat_time_tv);
 			convertView.setTag(holder);
 		}

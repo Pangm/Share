@@ -36,7 +36,7 @@
             android:visibility="visible" />
 
         <TextView
-            android:id="@+id/chatting_content_itv"
+            android:id="@+id/chatting_content_size"
             style="@style/ChatUIText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

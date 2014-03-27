@@ -32,7 +32,7 @@
             android:layout_height="wrap_content"
             android:layout_alignBaseline="@+id/chatto_image"
             android:layout_alignParentTop="true"
-            android:layout_toLeftOf="@+id/chatting_content_itv" />
+            android:layout_toLeftOf="@+id/chatting_content_size" />
 
         <ImageView
             android:id="@+id/chatto_image"
@@ -43,7 +43,7 @@
             android:src="@drawable/avatar_from" />
 
         <TextView
-            android:id="@+id/chatting_content_itv"
+            android:id="@+id/chatting_content_size"
             style="@style/ChatUIText"
             android:layout_centerVertical="true"
             android:layout_toLeftOf="@+id/chatto_image"
