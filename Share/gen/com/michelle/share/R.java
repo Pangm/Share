@@ -97,19 +97,21 @@ public final class R {
     public static final class layout {
         public static final int activity_chat=0x7f030000;
         public static final int activity_main=0x7f030001;
-        public static final int chat_item_from=0x7f030002;
-        public static final int chat_item_to=0x7f030003;
-        public static final int file_unit=0x7f030004;
-        public static final int fragment_friends=0x7f030005;
-        public static final int fragment_history_files=0x7f030006;
-        public static final int fragment_user_info=0x7f030007;
-        public static final int media_msg_from=0x7f030008;
-        public static final int media_msg_to=0x7f030009;
-        public static final int row_friends=0x7f03000a;
+        public static final int activity_thumbnail=0x7f030002;
+        public static final int chat_item_from=0x7f030003;
+        public static final int chat_item_to=0x7f030004;
+        public static final int file_unit=0x7f030005;
+        public static final int fragment_friends=0x7f030006;
+        public static final int fragment_history_files=0x7f030007;
+        public static final int fragment_user_info=0x7f030008;
+        public static final int media_msg_from=0x7f030009;
+        public static final int media_msg_to=0x7f03000a;
+        public static final int row_friends=0x7f03000b;
     }
     public static final class menu {
         public static final int chat=0x7f080000;
         public static final int main=0x7f080001;
+        public static final int thumbnail=0x7f080002;
     }
     public static final class string {
         public static final int action_settings=0x7f06000f;
@@ -126,6 +128,7 @@ public final class R {
         public static final int p2p_off_warning=0x7f060008;
         public static final int send_btn_content=0x7f060011;
         public static final int title_activity_chat=0x7f06000e;
+        public static final int title_activity_thumbnail=0x7f060012;
         public static final int title_section1=0x7f060002;
         public static final int title_section2=0x7f060003;
         public static final int title_section3=0x7f060004;
