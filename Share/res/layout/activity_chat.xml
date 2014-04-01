@@ -45,15 +45,14 @@
             android:layout_centerVertical="true"
             android:background="@drawable/send_btn"
             android:text="@string/send_btn_content"
-            android:textColor="@color/white"
-            android:width="3dp" />
+            android:textColor="@color/white" />
 
         <EditText
             android:id="@+id/msg_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignBottom="@+id/file_imgview"
-            android:layout_marginLeft="23dp"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="14dp"
             android:layout_toRightOf="@+id/file_imgview"
             android:background="@drawable/msg_text_bg"
             android:ems="10"
