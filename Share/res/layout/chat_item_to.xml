@@ -36,8 +36,9 @@
 
         <ImageView
             android:id="@+id/chatto_image"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="40dip"
+            android:layout_height="40dip"
+            android:scaleType="fitXY"
             android:layout_alignParentRight="true"
             android:layout_alignParentTop="true"
             android:src="@drawable/avatar_from" />
