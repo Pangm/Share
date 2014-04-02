@@ -1,15 +1,18 @@
 package com.michelle.share.socket;
 
+import java.io.BufferedInputStream;
 import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.ObjectInputStream;
 import java.io.OutputStream;
 import java.net.Socket;
 import java.util.Arrays;
 
+import com.michelle.share.Contact;
 import com.michelle.share.ShareApplication;
 
 import android.content.ContentResolver;
@@ -57,11 +60,21 @@ public class FileTransferManager implements Runnable {
 			handler.obtainMessage(ShareChatService.FILE_TRANSFER_HANDLE, this)
 					.sendToTarget();
 			DataInputStream dataInputStream = new DataInputStream(iStream);
+			ObjectInputStream ois = new ObjectInputStream(new BufferedInputStream(iStream)); 
 			while (true) {
 				try {
 					// Read from the InputStream
 					Log.d(FileTransferManager.TAG, "Server: connection done");
 					String fileName = dataInputStream.readUTF();
+					try {
+						if (fileName.equals("contact")) {
+							 Object obj = ois.readObject();  
+							 Contact contact = (Contact) obj;
+						}
+					} catch (ClassNotFoundException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 					
 					final File f = new File(
 							Environment.getExternalStorageDirectory() + "/"
@@ -95,7 +108,7 @@ public class FileTransferManager implements Runnable {
 							f.getAbsolutePath()).sendToTarget();
 				} catch (IOException e) {
 					Log.e(TAG, "disconnected", e);
-				}
+				} 
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
