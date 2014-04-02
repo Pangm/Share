@@ -58,20 +58,6 @@ public class FileTransferManager implements Runnable {
 					.sendToTarget();
 			DataInputStream dataInputStream = new DataInputStream(iStream);
 			while (true) {
-//				try {
-//					// Read from the InputStream
-//					bytes = iStream.read(buffer);
-//					if (bytes == -1) {
-//						break;
-//					}
-//
-//					// Send the obtained bytes to the UI Activity
-//					Log.d(TAG, "Rec:" + String.valueOf(buffer));
-//					handler.obtainMessage(ShareChatService.FILE_NAME, bytes,
-//							-1, buffer).sendToTarget();
-//				} catch (IOException e) {
-//					Log.e(TAG, "disconnected", e);
-//				}
 				try {
 					// Read from the InputStream
 					Log.d(FileTransferManager.TAG, "Server: connection done");
@@ -94,12 +80,6 @@ public class FileTransferManager implements Runnable {
 					FileOutputStream out = new FileOutputStream(f);
 					int len;
 					try {
-//						while ((len = iStream.read(buffer)) != -1) {
-//							if (len == 1024 && compareBytes(endBuf, buffer)) {
-//								break;
-//							}
-//							out.write(buffer, 0, len);	
-//						}
 						int byteCount = -1;
 						byte buf[] = new byte[1024 * 60];
 						while ((byteCount = dataInputStream.readInt()) != 0) {
@@ -149,5 +129,12 @@ public class FileTransferManager implements Runnable {
 			return true;
 		}
 		return false;
+	}
+
+	/**
+	 * @return the socket
+	 */
+	public Socket getSocket() {
+		return socket;
 	}
 }

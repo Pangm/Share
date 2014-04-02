@@ -145,8 +145,6 @@ public class ChatActivity extends Activity {
 					intent.setType(ContactsContract.Contacts.CONTENT_TYPE);
 	                startActivityForResult(intent, CHOOSE_CONTACT_RESULT_CODE);
 				}
-				
-				 
 			}
 		});
 		
@@ -198,24 +196,6 @@ public class ChatActivity extends Activity {
             serviceIntent.putExtra(FileTransferService.EXTRAS_FILE_PATH, uri.toString());
             startService(serviceIntent);
         }
-//        String filePath;  
-//        String[] filePathColumn = {MediaColumns.DATA};
-//        Log.d(ChatActivity.TAG, "Intent----------- " + uri);
-//        Cursor cursor = getContentResolver().query(data.getData(), filePathColumn, null, null, null);
-//        cursor.moveToFirst();
-//        int columnIndex = cursor.getColumnIndex(filePathColumn[0]);  
-//        filePath = cursor.getString(columnIndex);  
-//        cursor.close();
-//        myBinder.sendFileName(filePath);
-        //myBinder.sendFileName(uri.toString());
-//        Context context = getApplicationContext();
-//        ContentResolver cr = context.getContentResolver();
-//        InputStream is = null;
-//        try {
-//            is = cr.openInputStream(Uri.parse(uri.toString()));
-//        } catch (FileNotFoundException e) {
-//            Log.d(ChatActivity.TAG, e.toString());
-//        }
     }
 	
 	/* (non-Javadoc)
@@ -270,13 +250,6 @@ public class ChatActivity extends Activity {
 		unit.put("unitImg", R.drawable.ic_sd_rom);
 		unit.put("unitText", "SD内存");
 		fileUnitsList.add(unit);
-		
-	
-//		
-//		unit = new HashMap<String, Object>();
-//		unit.put("unitImg", R.drawable.apk);
-//		unit.put("unitText", "应用程序");
-//		fileUnitsList.add(unit);	
 	
 		SimpleAdapter dataAdapter = new SimpleAdapter(
 			this,

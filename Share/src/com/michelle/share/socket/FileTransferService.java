@@ -53,13 +53,10 @@ public class FileTransferService extends IntentService {
                     Log.d(ChatActivity.TAG, e.toString());
                 }
                 
-                //FileTransferManager.copyFile(iStream, oStream);
-                
                 byte buf[] = new byte[1024 * 60];
         		int byteCount = 0;
         		try {
         			while ((byteCount = iStream.read(buf)) != -1) {
-        				//oStream.write(buf, 0, len);
         				dataOutStream.writeInt(byteCount);
         				dataOutStream.flush();
         				dataOutStream.write(buf, 0, byteCount);

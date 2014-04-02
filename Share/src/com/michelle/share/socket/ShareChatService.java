@@ -105,10 +105,12 @@ public class ShareChatService extends Service implements Handler.Callback,
 			Object obj = msg.obj;
 			// (chatFragment).setChatManager((ChatManager) obj);
 			chatManager = (ChatManager) obj;
+			((ShareApplication) getApplication()).setChatSocket(((ChatManager) obj).getSocket());
 			break;
 		case FILE_TRANSFER_HANDLE:
 			fileTransferManager = (FileTransferManager) msg.obj;
 			((ShareApplication) getApplication()).setoStream(fileTransferManager.getoStream());
+			((ShareApplication) getApplication()).setChatSocket(fileTransferManager.getSocket());
 			
 			break;
 		default:
