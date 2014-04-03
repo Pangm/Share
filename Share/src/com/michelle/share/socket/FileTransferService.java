@@ -43,7 +43,7 @@ public class FileTransferService extends IntentService {
             try {
             	OutputStream oStream = ((ShareApplication) getApplication()).getoStream();
             	DataOutputStream dataOutStream = new DataOutputStream(oStream);
-            	dataOutStream.writeUTF("my pictrue" + System.currentTimeMillis());
+            	dataOutStream.writeUTF("image" + System.currentTimeMillis());
             	dataOutStream.flush();
                 ContentResolver cr = context.getContentResolver();
                 InputStream iStream = null;

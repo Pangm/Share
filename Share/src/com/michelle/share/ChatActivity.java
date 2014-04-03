@@ -311,8 +311,6 @@ public class ChatActivity extends Activity {
 		@Override
 		public void onReceive(Context context, Intent intent) {
 			System.out.println("OnReceiver");
-			Bundle bundle=intent.getExtras();
-			String msg = bundle.getString("Msg");
 			// notify receive a message. 
 			chatAdapter.notifyDataSetChanged(); 
 		}

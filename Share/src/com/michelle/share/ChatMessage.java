@@ -7,10 +7,10 @@ public class ChatMessage {
 	public static final int MESSAGE_TO = 1;
 
 	private int direction;
-	private String content;
+	private Object content;
 	private Time time;
 
-	public ChatMessage(int direction, String content, Time time) {
+	public ChatMessage(int direction, Object content, Time time) {
 		super();
 		this.direction = direction;
 		this.content = content;
@@ -39,11 +39,11 @@ public class ChatMessage {
 		this.direction = direction;
 	}
 
-	public void setContent(String content) {
+	public void setContent(Object content) {
 		this.content = content;
 	}
 
-	public CharSequence getContent() {
+	public Object getContent() {
 		return content;
 	}
 }

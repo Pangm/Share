@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.io.Serializable;
 import java.net.Socket;
 import java.util.Arrays;
 
@@ -17,6 +18,7 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Environment;
 import android.os.Handler;
+import android.text.format.Time;
 import android.util.Log;
 
 public class FileTransferManager implements Runnable {
@@ -79,7 +81,7 @@ public class FileTransferManager implements Runnable {
 					
 					final File f = new File(
 							Environment.getExternalStorageDirectory() + "/"
-									+ "MichelleShare" + "/wifip2pshared-"
+									+ "MichelleShare" + "/"
 									+ fileName + ".jpg");
 //									+ System.currentTimeMillis() + ".jpg");
 
@@ -111,8 +113,18 @@ public class FileTransferManager implements Runnable {
 						Log.d(FileTransferManager.TAG, e.toString());
 					}
 					// Send the obtained bytes to the UI Activity
+					float size = f.length() / (1024);
+					String name = f.getName();
+					String path = f.getAbsolutePath();
+					Time time = new Time();
+					time.setToNow();
+					
+					ImageFile imageFile = new ImageFile(name, size, path, time);
+					
+//					handler.obtainMessage(ShareChatService.FILE_READ, 0, -1,
+//							f.getAbsolutePath()).sendToTarget();
 					handler.obtainMessage(ShareChatService.FILE_READ, 0, -1,
-							f.getAbsolutePath()).sendToTarget();
+							imageFile).sendToTarget();
 				} catch (IOException e) {
 					Log.e(TAG, "disconnected", e);
 				}
@@ -149,5 +161,80 @@ public class FileTransferManager implements Runnable {
 			return true;
 		}
 		return false;
+	}
+	
+	public class ImageFile implements Serializable{
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 2480574030755199339L;
+		private float size;
+		private String name;
+		private String path;
+		private Time time;
+		
+		public ImageFile(String name, float size, String path,
+				Time time) {
+			this.size = size;
+			this.name = name;
+			this.path = path;
+			this.time = time;
+		}
+
+		/**
+		 * @return the size
+		 */
+		public float getSize() {
+			return size;
+		}
+
+		/**
+		 * @param size the size to set
+		 */
+		public void setSize(float size) {
+			this.size = size;
+		}
+
+		/**
+		 * @return the name
+		 */
+		public String getName() {
+			return name;
+		}
+
+		/**
+		 * @param name the name to set
+		 */
+		public void setName(String name) {
+			this.name = name;
+		}
+
+		/**
+		 * @return the path
+		 */
+		public String getPath() {
+			return path;
+		}
+
+		/**
+		 * @param path the path to set
+		 */
+		public void setPath(String path) {
+			this.path = path;
+		}
+
+		/**
+		 * @return the time
+		 */
+		public Time getTime() {
+			return time;
+		}
+
+		/**
+		 * @param time the time to set
+		 */
+		public void setTime(Time time) {
+			this.time = time;
+		}
 	}
 }

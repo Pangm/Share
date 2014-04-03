@@ -5,6 +5,7 @@ import java.io.IOException;
 import com.michelle.share.ChatMessage;
 import com.michelle.share.FriendsFragment.MessageTarget;
 import com.michelle.share.ShareApplication;
+import com.michelle.share.socket.FileTransferManager.ImageFile;
 
 import android.app.Service;
 import android.content.Context;
@@ -71,16 +72,26 @@ public class ShareChatService extends Service implements Handler.Callback,
 			sendBroadcast(intent);
 			break;
 		case FILE_READ:
-			Log.d(TAG, (String) msg.obj);
+			//Log.d(TAG, (String) msg.obj);
+//			Time time2 = new Time();
+//			time2.setToNow();
+//			ChatMessage chatMsg2 = new ChatMessage(ChatMessage.MESSAGE_FROM,
+//					(String) msg.obj, time2);
+//			// (chatFragment).pushMessage("Buddy: " + readMessage);
+//			((ShareApplication) getApplication()).getMessages().add(chatMsg2);
+//
+//			Intent intent2 = new Intent();
+//			intent2.putExtra("Msg", (String) msg.obj);
+//			intent2.setAction("android.intent.action.MSG_RECEIVE");// action与接收器相同
+//			sendBroadcast(intent2);
 			Time time2 = new Time();
 			time2.setToNow();
 			ChatMessage chatMsg2 = new ChatMessage(ChatMessage.MESSAGE_FROM,
-					(String) msg.obj, time2);
-			// (chatFragment).pushMessage("Buddy: " + readMessage);
+					msg.obj, time2);
 			((ShareApplication) getApplication()).getMessages().add(chatMsg2);
 
 			Intent intent2 = new Intent();
-			intent2.putExtra("Msg", (String) msg.obj);
+			//intent2.putExtra("Msg", (ImageFile) msg.obj);
 			intent2.setAction("android.intent.action.MSG_RECEIVE");// action与接收器相同
 			sendBroadcast(intent2);
 			break;
