@@ -78,21 +78,21 @@ public class FileTransferService extends IntentService {
                 Log.e(ChatActivity.TAG, e.getMessage());
             }
         } 
-        else if (intent.getAction().equals(ACTION_SEND_CONTACT)) {
-        	Contact contact = (Contact) intent.getExtras().getSerializable(CONTACT);
-        	
-        	try {
-        		//is = new ObjectInputStream(new BufferedInputStream(socket.getInputStream()));  
-                ObjectOutputStream os = new ObjectOutputStream(((ShareApplication) getApplication()).getoStream());
-                os.writeUTF("contact");
-                os.flush();
-                
-                os.writeObject(contact);
-                os.flush();                
-        	} catch (Exception e) {
-        		Log.e(ChatActivity.TAG, e.getMessage());
-        	}
-        }
+//        else if (intent.getAction().equals(ACTION_SEND_CONTACT)) {
+//        	Contact contact = (Contact) intent.getExtras().getSerializable(CONTACT);
+//        	
+//        	try {
+//        		//is = new ObjectInputStream(new BufferedInputStream(socket.getInputStream()));  
+//                ObjectOutputStream os = new ObjectOutputStream(((ShareApplication) getApplication()).getoStream());
+//                os.writeUTF("contact");
+//                os.flush();
+//                
+//                os.writeObject(contact);
+//                os.flush();                
+//        	} catch (Exception e) {
+//        		Log.e(ChatActivity.TAG, e.getMessage());
+//        	}
+//        }
 	}
 
 }

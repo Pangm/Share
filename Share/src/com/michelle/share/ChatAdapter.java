@@ -4,8 +4,6 @@ import java.io.File;
 import java.io.InputStream;
 import java.util.List;
 
-import com.michelle.share.socket.FileTransferManager.ImageFile;
-
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -51,7 +49,9 @@ public class ChatAdapter extends BaseAdapter {
 		if (convertView == null || (holder = (ViewHolder) convertView.getTag()).flag != message.getDirection()) {
 			holder = new ViewHolder();
 			
-			try {
+			Object object = message.getContent();
+			
+			if (object instanceof ImageFile) {
 				ImageFile imageFile = (ImageFile) message.getContent();
 				if (message.getDirection() == ChatMessage.MESSAGE_FROM) {
 					holder.flag = ChatMessage.MESSAGE_FROM;
@@ -82,7 +82,7 @@ public class ChatAdapter extends BaseAdapter {
 				holder.imageView.setImageBitmap(img);
 				
 				
-			} catch (Exception e) {
+			} else {
 				if (message.getDirection() == ChatMessage.MESSAGE_FROM) {
 					holder.flag = ChatMessage.MESSAGE_FROM;
 	

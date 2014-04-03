@@ -8,6 +8,7 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.app.Activity;
 import android.app.Application;
 import android.net.wifi.p2p.WifiP2pInfo;
 
@@ -23,6 +24,7 @@ public class ShareApplication extends Application {
 	private OutputStream oStream;
 	private Socket chatSocket;
 	private Socket transferSocket;
+	public Activity mainActivity;
 	
 	/**
 	 * @return the chatSocket

@@ -41,6 +41,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
+            android:paddingLeft="10dp"
+            android:paddingBottom="5dp"
+            android:paddingRight="5dp"
+            android:paddingTop="5dp"
             android:layout_centerHorizontal="true"
             android:background="@drawable/chatfrom_bg"
             android:orientation="horizontal" >
@@ -49,10 +53,8 @@
                 android:id="@+id/file_avaster"
                 android:layout_width="48dip"
                 android:layout_height="48dip"
+                android:layout_gravity="center"
                 android:scaleType="fitXY"
-                android:paddingBottom="5dp"
-                android:paddingLeft="5dp"
-                android:paddingTop="5dp"
                 android:src="@drawable/chat_item_to" />
 
             <LinearLayout

@@ -14,6 +14,7 @@ import java.net.Socket;
 import java.util.Arrays;
 
 import com.michelle.share.Contact;
+import com.michelle.share.ImageFile;
 import com.michelle.share.ShareApplication;
 
 import android.content.ContentResolver;
@@ -62,21 +63,21 @@ public class FileTransferManager implements Runnable {
 			handler.obtainMessage(ShareChatService.FILE_TRANSFER_HANDLE, this)
 					.sendToTarget();
 			DataInputStream dataInputStream = new DataInputStream(iStream);
-			ObjectInputStream ois = new ObjectInputStream(new BufferedInputStream(iStream)); 
+			//ObjectInputStream ois = new ObjectInputStream(new BufferedInputStream(iStream)); 
 			while (true) {
 				try {
 					// Read from the InputStream
 					Log.d(FileTransferManager.TAG, "Server: connection done");
 					String fileName = dataInputStream.readUTF();
-					try {
-						if (fileName.equals("contact")) {
-							 Object obj = ois.readObject();  
-							 Contact contact = (Contact) obj;
-						}
-					} catch (ClassNotFoundException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
+//					try {
+//						if (fileName.equals("contact")) {
+//							 Object obj = ois.readObject();  
+//							 Contact contact = (Contact) obj;
+//						}
+//					} catch (ClassNotFoundException e) {
+//						// TODO Auto-generated catch block
+//						e.printStackTrace();
+//					}
 					
 					final File f = new File(
 							Environment.getExternalStorageDirectory() + "/"
@@ -156,80 +157,6 @@ public class FileTransferManager implements Runnable {
 		return false;
 	}
 	
-	public class ImageFile implements Serializable{
-		/**
-		 * 
-		 */
-		private static final long serialVersionUID = 2480574030755199339L;
-		private float size;
-		private String name;
-		private String path;
-		private Time time;
-		
-		public ImageFile(String name, float size, String path,
-				Time time) {
-			this.size = size;
-			this.name = name;
-			this.path = path;
-			this.time = time;
-		}
-
-		/**
-		 * @return the size
-		 */
-		public float getSize() {
-			return size;
-		}
-
-		/**
-		 * @param size the size to set
-		 */
-		public void setSize(float size) {
-			this.size = size;
-		}
-
-		/**
-		 * @return the name
-		 */
-		public String getName() {
-			return name;
-		}
-
-		/**
-		 * @param name the name to set
-		 */
-		public void setName(String name) {
-			this.name = name;
-		}
-
-		/**
-		 * @return the path
-		 */
-		public String getPath() {
-			return path;
-		}
-
-		/**
-		 * @param path the path to set
-		 */
-		public void setPath(String path) {
-			this.path = path;
-		}
-
-		/**
-		 * @return the time
-		 */
-		public Time getTime() {
-			return time;
-		}
-
-		/**
-		 * @param time the time to set
-		 */
-		public void setTime(Time time) {
-			this.time = time;
-		}
-
 	/**
 	 * @return the socket
 	 */

@@ -112,7 +112,8 @@ public class ChatActivity extends Activity {
 			
 			// Send message
 			private void sendMessage(String msg) {
-				Time time = new Time("GMT+8");
+				//Time time = new Time("GMT+8");
+				Time time = new Time();
 				time.setToNow();
 				messages.add(new ChatMessage(ChatMessage.MESSAGE_TO, msg, time));
 				myBinder.sendMsg(MsgType.MESSAGE, msg);				
@@ -198,6 +199,8 @@ public class ChatActivity extends Activity {
             serviceIntent.setAction(FileTransferService.ACTION_SEND_FILE);
             serviceIntent.putExtra(FileTransferService.EXTRAS_FILE_PATH, uri.toString());
             startService(serviceIntent);
+            
+            //messages.add(new ChatMessage(ChatMessage.MESSAGE_TO, ))
         } else if (requestCode == CHOOSE_CONTACT_RESULT_CODE) {
         	uri = data.getData();
         	Cursor cursor = getContentResolver().query(uri, null, null, null, null);
@@ -240,6 +243,7 @@ public class ChatActivity extends Activity {
         	    }
         	    emails.close();
         	    cursor.close();
+        	    
         	    
         	    Contact contact = new Contact(name, phoneDetails, emailDetails, img);
         	    Intent serviceIntent = new Intent(this, FileTransferService.class);

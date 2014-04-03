@@ -152,6 +152,8 @@ public class MainActivity extends FragmentActivity implements
 		manager = (WifiP2pManager) getSystemService(Context.WIFI_P2P_SERVICE);
 		channel = manager.initialize(this, getMainLooper(), null);
 		startRegistrationAndDiscovery();
+		
+		((ShareApplication) getApplication()).mainActivity = this;
 	}
 
 	private void startRegistrationAndDiscovery() {
@@ -612,19 +614,19 @@ public class MainActivity extends FragmentActivity implements
 			mUserInfoFrag.resetViews();
 		}
 		
-		// close Chat socket
-		try {
-			((ShareApplication) getApplication()).getChatSocket().close();
-		} catch (Exception e) {
-		}
-		
-		// close transfer socket
-		try {
-			((ShareApplication) getApplication()).getTransferSocket().close();
-		} catch (Exception e) {
-		}
-		
-		// close WiFi p2p connection
-		this.disconnect();
+//		// close Chat socket
+//		try {
+//			((ShareApplication) getApplication()).getChatSocket().close();
+//		} catch (Exception e) {
+//		}
+//		
+//		// close transfer socket
+//		try {
+//			((ShareApplication) getApplication()).getTransferSocket().close();
+//		} catch (Exception e) {
+//		}
+//		
+//		// close WiFi p2p connection
+//		this.disconnect();
 	}
 }
