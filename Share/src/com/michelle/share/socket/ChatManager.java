@@ -63,6 +63,13 @@ public class ChatManager implements Runnable {
 		}
 	}
 
+	/**
+	 * @return the socket
+	 */
+	public Socket getSocket() {
+		return socket;
+	}
+
 	public void write(byte[] buffer) {
 		try {
 			oStream.write(buffer);

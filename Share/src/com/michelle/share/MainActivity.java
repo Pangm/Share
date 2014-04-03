@@ -463,15 +463,6 @@ public class MainActivity extends FragmentActivity implements
 		isWifiP2pEnabled = b;
 	}
 
-	public void resetData() {
-		if (mFriendsFrag != null) {
-			mFriendsFrag.clearPeers();
-		}
-		if (mUserInfoFrag != null) {
-			mUserInfoFrag.resetViews();
-		}
-	}
-
 	@Override
 	public void startChat(WifiP2pDevice device) {
 		// TODO Auto-generated method stub
@@ -563,6 +554,7 @@ public class MainActivity extends FragmentActivity implements
 			}
 
 		});
+		mFriendsFrag.clearPeers();
 		((ShareApplication) getApplication()).setIsConnected(false);
 	}
 	
@@ -599,5 +591,40 @@ public class MainActivity extends FragmentActivity implements
 		if (mUserInfoFrag != null && device != null) {
 			mUserInfoFrag.ShowDeviceDetails(device);
 		}
+	}
+	
+	/* (non-Javadoc)
+	 * @see android.support.v4.app.FragmentActivity#onDestroy()
+	 */
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		
+		
+	}
+	
+
+	public void resetData() {
+		if (mFriendsFrag != null) {
+			mFriendsFrag.clearPeers();
+		}
+		if (mUserInfoFrag != null) {
+			mUserInfoFrag.resetViews();
+		}
+		
+		// close Chat socket
+		try {
+			((ShareApplication) getApplication()).getChatSocket().close();
+		} catch (Exception e) {
+		}
+		
+		// close transfer socket
+		try {
+			((ShareApplication) getApplication()).getTransferSocket().close();
+		} catch (Exception e) {
+		}
+		
+		// close WiFi p2p connection
+		this.disconnect();
 	}
 }

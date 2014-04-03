@@ -22,11 +22,14 @@ import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.ContentResolver;
+import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.support.v4.app.NavUtils;
 import android.text.format.Time;
 import android.util.Log;
@@ -145,8 +148,6 @@ public class ChatActivity extends Activity {
 					intent.setType(ContactsContract.Contacts.CONTENT_TYPE);
 	                startActivityForResult(intent, CHOOSE_CONTACT_RESULT_CODE);
 				}
-				
-				 
 			}
 		});
 		
@@ -197,25 +198,58 @@ public class ChatActivity extends Activity {
             serviceIntent.setAction(FileTransferService.ACTION_SEND_FILE);
             serviceIntent.putExtra(FileTransferService.EXTRAS_FILE_PATH, uri.toString());
             startService(serviceIntent);
+        } else if (requestCode == CHOOSE_CONTACT_RESULT_CODE) {
+        	uri = data.getData();
+        	Cursor cursor = getContentResolver().query(uri, null, null, null, null);
+        	if(cursor.moveToFirst()){
+        	    String name = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
+        	    String id = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts._ID));
+        	    Bitmap img = null;
+        	    long photoId = cursor.getLong(cursor.getColumnIndex(ContactsContract.Contacts.PHOTO_ID));
+        	    if (photoId > 0) {
+        	    	ContentUris.withAppendedId(  
+                            ContactsContract.Contacts.CONTENT_URI, cursor.getColumnIndex(ContactsContract.Contacts._ID));
+        	    	InputStream input = ContactsContract.Contacts.openContactPhotoInputStream(getContentResolver(), uri);
+        	    	img = BitmapFactory.decodeStream(input);
+        	    }
+        	    Cursor phones = getContentResolver().query(
+        	    		ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
+        	    		null,
+        	    		ContactsContract.CommonDataKinds.Phone.CONTACT_ID + "=" + id,
+        	    		null, null);
+        	    ArrayList<String> phoneDetails = new ArrayList<String>();
+        	    while (phones.moveToNext()) {
+        	    	String phone = phones.getString(phones.
+        	    			getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)); 
+        	    	String phoneType = phones.getString(phones.
+        	    			getColumnIndex(ContactsContract.CommonDataKinds.Phone.DATA2));
+        	    	phoneDetails.add(phone);
+        	    }        	           	    
+        	    phones.close();
+        	    ArrayList<String> emailDetails = new ArrayList<String>();
+        	    Cursor emails = getContentResolver().query(
+        	    		ContactsContract.CommonDataKinds.Email.CONTENT_URI,
+        	    		null,
+        	    		ContactsContract.CommonDataKinds.Email.CONTACT_ID + "=" + id,
+        	    		null, null);
+        	    while (emails.moveToNext()) {
+        	    	String emailAddress = emails.getString(emails
+        	    			.getColumnIndex(ContactsContract
+        	    					.CommonDataKinds.Email.DATA));
+        	    	emailDetails.add(emailAddress);
+        	    }
+        	    emails.close();
+        	    cursor.close();
+        	    
+        	    Contact contact = new Contact(name, phoneDetails, emailDetails, img);
+        	    Intent serviceIntent = new Intent(this, FileTransferService.class);
+                serviceIntent.setAction(FileTransferService.ACTION_SEND_CONTACT);
+                serviceIntent.putExtra(FileTransferService.EXTRAS_FILE_PATH, uri.toString());
+                serviceIntent.putExtra(FileTransferService.CONTACT, contact);
+                startService(serviceIntent);
+        	}
+        	
         }
-//        String filePath;  
-//        String[] filePathColumn = {MediaColumns.DATA};
-//        Log.d(ChatActivity.TAG, "Intent----------- " + uri);
-//        Cursor cursor = getContentResolver().query(data.getData(), filePathColumn, null, null, null);
-//        cursor.moveToFirst();
-//        int columnIndex = cursor.getColumnIndex(filePathColumn[0]);  
-//        filePath = cursor.getString(columnIndex);  
-//        cursor.close();
-//        myBinder.sendFileName(filePath);
-        //myBinder.sendFileName(uri.toString());
-//        Context context = getApplicationContext();
-//        ContentResolver cr = context.getContentResolver();
-//        InputStream is = null;
-//        try {
-//            is = cr.openInputStream(Uri.parse(uri.toString()));
-//        } catch (FileNotFoundException e) {
-//            Log.d(ChatActivity.TAG, e.toString());
-//        }
     }
 	
 	/* (non-Javadoc)
@@ -270,13 +304,6 @@ public class ChatActivity extends Activity {
 		unit.put("unitImg", R.drawable.ic_sd_rom);
 		unit.put("unitText", "SD内存");
 		fileUnitsList.add(unit);
-		
-	
-//		
-//		unit = new HashMap<String, Object>();
-//		unit.put("unitImg", R.drawable.apk);
-//		unit.put("unitText", "应用程序");
-//		fileUnitsList.add(unit);	
 	
 		SimpleAdapter dataAdapter = new SimpleAdapter(
 			this,

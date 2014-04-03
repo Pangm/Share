@@ -4,12 +4,14 @@ import java.io.DataOutputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintStream;
 import java.util.Arrays;
 
 import com.michelle.share.ChatActivity;
+import com.michelle.share.Contact;
 import com.michelle.share.ShareApplication;
 
 import android.app.IntentService;
@@ -24,6 +26,8 @@ public class FileTransferService extends IntentService {
 	public static final String EXTRAS_FILE_PATH = "file_url";
     public static final String EXTRAS_OSTREAM = "ostream";
 	private static final String TAG = "FileTransferService";
+	public static final String ACTION_SEND_CONTACT = "com.michelle.share.socket.SEND_CONTACT";
+	public static final String CONTACT = "contact";
     
 	public FileTransferService(String name) {
 		super(name);
@@ -42,6 +46,7 @@ public class FileTransferService extends IntentService {
             
             try {
             	OutputStream oStream = ((ShareApplication) getApplication()).getoStream();
+//            	OutputStream oStream = ((ShareApplication) getApplication()).getTransferSocket().getOutputStream();
             	DataOutputStream dataOutStream = new DataOutputStream(oStream);
             	dataOutStream.writeUTF("image" + System.currentTimeMillis());
             	dataOutStream.flush();
@@ -53,13 +58,10 @@ public class FileTransferService extends IntentService {
                     Log.d(ChatActivity.TAG, e.toString());
                 }
                 
-                //FileTransferManager.copyFile(iStream, oStream);
-                
                 byte buf[] = new byte[1024 * 60];
         		int byteCount = 0;
         		try {
         			while ((byteCount = iStream.read(buf)) != -1) {
-        				//oStream.write(buf, 0, len);
         				dataOutStream.writeInt(byteCount);
         				dataOutStream.flush();
         				dataOutStream.write(buf, 0, byteCount);
@@ -75,6 +77,21 @@ public class FileTransferService extends IntentService {
             } catch (Exception e) {
                 Log.e(ChatActivity.TAG, e.getMessage());
             }
+        } 
+        else if (intent.getAction().equals(ACTION_SEND_CONTACT)) {
+        	Contact contact = (Contact) intent.getExtras().getSerializable(CONTACT);
+        	
+        	try {
+        		//is = new ObjectInputStream(new BufferedInputStream(socket.getInputStream()));  
+                ObjectOutputStream os = new ObjectOutputStream(((ShareApplication) getApplication()).getoStream());
+                os.writeUTF("contact");
+                os.flush();
+                
+                os.writeObject(contact);
+                os.flush();                
+        	} catch (Exception e) {
+        		Log.e(ChatActivity.TAG, e.getMessage());
+        	}
         }
 	}
 

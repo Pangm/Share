@@ -4,6 +4,7 @@
 package com.michelle.share;
 
 import java.io.OutputStream;
+import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,6 +21,37 @@ public class ShareApplication extends Application {
 	private boolean isConnected = false;
 	private WifiP2pInfo info = null;
 	private OutputStream oStream;
+	private Socket chatSocket;
+	private Socket transferSocket;
+	
+	/**
+	 * @return the chatSocket
+	 */
+	public Socket getChatSocket() {
+		return chatSocket;
+	}
+
+	/**
+	 * @param chatSocket the chatSocket to set
+	 */
+	public void setChatSocket(Socket chatSocket) {
+		this.chatSocket = chatSocket;
+	}
+
+	/**
+	 * @return the transferSocket
+	 */
+	public Socket getTransferSocket() {
+		return transferSocket;
+	}
+
+	/**
+	 * @param transferSocket the transferSocket to set
+	 */
+	public void setTransferSocket(Socket transferSocket) {
+		this.transferSocket = transferSocket;
+	}
+
 	/**
 	 * @return the oStream
 	 */

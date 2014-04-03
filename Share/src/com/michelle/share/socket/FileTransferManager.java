@@ -1,16 +1,19 @@
 package com.michelle.share.socket;
 
+import java.io.BufferedInputStream;
 import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.ObjectInputStream;
 import java.io.OutputStream;
 import java.io.Serializable;
 import java.net.Socket;
 import java.util.Arrays;
 
+import com.michelle.share.Contact;
 import com.michelle.share.ShareApplication;
 
 import android.content.ContentResolver;
@@ -59,25 +62,21 @@ public class FileTransferManager implements Runnable {
 			handler.obtainMessage(ShareChatService.FILE_TRANSFER_HANDLE, this)
 					.sendToTarget();
 			DataInputStream dataInputStream = new DataInputStream(iStream);
+			ObjectInputStream ois = new ObjectInputStream(new BufferedInputStream(iStream)); 
 			while (true) {
-//				try {
-//					// Read from the InputStream
-//					bytes = iStream.read(buffer);
-//					if (bytes == -1) {
-//						break;
-//					}
-//
-//					// Send the obtained bytes to the UI Activity
-//					Log.d(TAG, "Rec:" + String.valueOf(buffer));
-//					handler.obtainMessage(ShareChatService.FILE_NAME, bytes,
-//							-1, buffer).sendToTarget();
-//				} catch (IOException e) {
-//					Log.e(TAG, "disconnected", e);
-//				}
 				try {
 					// Read from the InputStream
 					Log.d(FileTransferManager.TAG, "Server: connection done");
 					String fileName = dataInputStream.readUTF();
+					try {
+						if (fileName.equals("contact")) {
+							 Object obj = ois.readObject();  
+							 Contact contact = (Contact) obj;
+						}
+					} catch (ClassNotFoundException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 					
 					final File f = new File(
 							Environment.getExternalStorageDirectory() + "/"
@@ -96,12 +95,6 @@ public class FileTransferManager implements Runnable {
 					FileOutputStream out = new FileOutputStream(f);
 					int len;
 					try {
-//						while ((len = iStream.read(buffer)) != -1) {
-//							if (len == 1024 && compareBytes(endBuf, buffer)) {
-//								break;
-//							}
-//							out.write(buffer, 0, len);	
-//						}
 						int byteCount = -1;
 						byte buf[] = new byte[1024 * 60];
 						while ((byteCount = dataInputStream.readInt()) != 0) {
@@ -127,7 +120,7 @@ public class FileTransferManager implements Runnable {
 							imageFile).sendToTarget();
 				} catch (IOException e) {
 					Log.e(TAG, "disconnected", e);
-				}
+				} 
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -236,5 +229,11 @@ public class FileTransferManager implements Runnable {
 		public void setTime(Time time) {
 			this.time = time;
 		}
+
+	/**
+	 * @return the socket
+	 */
+	public Socket getSocket() {
+		return socket;
 	}
 }

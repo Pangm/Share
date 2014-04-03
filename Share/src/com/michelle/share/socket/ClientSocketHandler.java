@@ -48,8 +48,4 @@ public class ClientSocketHandler extends Thread {
             return;
         }
     }
-
-//    public Runnable getChat() {
-//        return manager;
-//    }
 }

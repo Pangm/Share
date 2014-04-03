@@ -116,10 +116,12 @@ public class ShareChatService extends Service implements Handler.Callback,
 			Object obj = msg.obj;
 			// (chatFragment).setChatManager((ChatManager) obj);
 			chatManager = (ChatManager) obj;
+			((ShareApplication) getApplication()).setChatSocket(((ChatManager) obj).getSocket());
 			break;
 		case FILE_TRANSFER_HANDLE:
 			fileTransferManager = (FileTransferManager) msg.obj;
 			((ShareApplication) getApplication()).setoStream(fileTransferManager.getoStream());
+			((ShareApplication) getApplication()).setChatSocket(fileTransferManager.getSocket());
 			
 			break;
 		default:
@@ -146,26 +148,30 @@ public class ShareChatService extends Service implements Handler.Callback,
 
 		public void sendMsg(MsgType type, Object obj) {
 
-			switch (type) {
-			case MESSAGE:
-				chatManager.write(((String) obj).getBytes());
-				break;
-			case CONTACT:
-				break;
-			case PHOTO:
-				fileTransferManager.write(((String)obj).getBytes());
-				break;
-			case MUSIC:
-				break;
-			case VIDEO:
-				break;
-			case APP:
-				break;
-			case OTHER_FILE:
-				break;
-			default:
-				break;
-
+			try
+			{
+				switch (type) {
+				case MESSAGE:
+					chatManager.write(((String) obj).getBytes());
+					break;
+				case CONTACT:
+					break;
+				case PHOTO:
+					fileTransferManager.write(((String)obj).getBytes());
+					break;
+				case MUSIC:
+					break;
+				case VIDEO:
+					break;
+				case APP:
+					break;
+				case OTHER_FILE:
+					break;
+				default:
+					break;
+				}
+			} catch (Exception e) {
+				///
 			}
 		}
 		
