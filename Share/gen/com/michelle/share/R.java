@@ -78,7 +78,7 @@ public final class R {
         public static final int chatto_image=0x7f09000d;
         public static final int device_details=0x7f09001c;
         public static final int device_name=0x7f09001b;
-        public static final int file_avaster=0x7f090019;
+        public static final int file_avaster=0x7f090017;
         public static final int file_imgview=0x7f090003;
         public static final int file_name=0x7f090018;
         public static final int file_unit_img=0x7f09000e;
@@ -87,7 +87,7 @@ public final class R {
         public static final int group_ip=0x7f090014;
         public static final int group_owner=0x7f090013;
         public static final int icon=0x7f09001a;
-        public static final int image_thumbnail=0x7f090017;
+        public static final int image_thumbnail=0x7f090019;
         public static final int msg_send_layout=0x7f090002;
         public static final int msg_text=0x7f090005;
         public static final int my_address=0x7f090011;
@@ -106,9 +106,10 @@ public final class R {
         public static final int fragment_friends=0x7f030005;
         public static final int fragment_history_files=0x7f030006;
         public static final int fragment_user_info=0x7f030007;
-        public static final int media_msg_from=0x7f030008;
-        public static final int media_msg_to=0x7f030009;
-        public static final int row_friends=0x7f03000a;
+        public static final int history_file_item=0x7f030008;
+        public static final int media_msg_from=0x7f030009;
+        public static final int media_msg_to=0x7f03000a;
+        public static final int row_friends=0x7f03000b;
     }
     public static final class menu {
         public static final int chat=0x7f080000;
