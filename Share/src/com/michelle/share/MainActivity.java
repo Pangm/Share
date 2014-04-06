@@ -355,6 +355,9 @@ public class MainActivity extends FragmentActivity implements
 				}
 			});
 			return true;
+		case R.id.atn_settings:
+			disconnect();
+			return true;
 		default:
 			return super.onOptionsItemSelected(item);
 		}

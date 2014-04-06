@@ -2,7 +2,7 @@
 <resources>
 
     <string name="app_name">Share</string>
-    <string name="atn_settings">Settings</string>
+    <string name="atn_settings">断开连接</string>
     <string name="title_section1">好友</string>
     <string name="title_section2">个人信息</string>
     <string name="title_section3">历史记录</string>

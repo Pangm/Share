@@ -74,24 +74,13 @@ public class ShareChatService extends Service implements Handler.Callback,
 			break;
 		case FILE_READ:
 			//Log.d(TAG, (String) msg.obj);
-//			Time time2 = new Time();
-//			time2.setToNow();
-//			ChatMessage chatMsg2 = new ChatMessage(ChatMessage.MESSAGE_FROM,
-//					(String) msg.obj, time2);
-//			// (chatFragment).pushMessage("Buddy: " + readMessage);
-//			((ShareApplication) getApplication()).getMessages().add(chatMsg2);
-//
-//			Intent intent2 = new Intent();
-//			intent2.putExtra("Msg", (String) msg.obj);
-//			intent2.setAction("android.intent.action.MSG_RECEIVE");// action与接收器相同
-//			sendBroadcast(intent2);
 			Time time2 = new Time();
 			time2.setToNow();
 			ChatMessage chatMsg2 = new ChatMessage(ChatMessage.MESSAGE_FROM,
 					msg.obj, time2);
 			((ShareApplication) getApplication()).getMessages().add(chatMsg2);
-			ImageFileService imageFileService = new ImageFileService(((ShareApplication) getApplication()).mainActivity);
-			
+//			ImageFileService imageFileService = new ImageFileService(this((ShareApplication) getApplication()).mainActivity);
+			ImageFileService imageFileService = new ImageFileService(this);
 			ImageFile imageFile = (ImageFile) msg.obj;
 			
 			imageFileService.save(imageFile);
