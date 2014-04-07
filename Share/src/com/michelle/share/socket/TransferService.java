@@ -6,9 +6,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.io.PrintStream;
-import java.util.Arrays;
+import java.net.Socket;
 
 import com.michelle.share.ChatActivity;
 import com.michelle.share.Contact;
@@ -21,7 +19,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.util.Log;
 
-public class FileTransferService extends IntentService {
+public class TransferService extends IntentService {
 	public static final String ACTION_SEND_FILE = "com.michelle.share.socket.SEND_FILE";
 	public static final String EXTRAS_FILE_PATH = "file_url";
     public static final String EXTRAS_OSTREAM = "ostream";
@@ -29,13 +27,13 @@ public class FileTransferService extends IntentService {
 	public static final String ACTION_SEND_CONTACT = "com.michelle.share.socket.SEND_CONTACT";
 	public static final String CONTACT = "contact";
     
-	public FileTransferService(String name) {
+	public TransferService(String name) {
 		super(name);
 		// TODO Auto-generated constructor stub
 	}
 	
-	public FileTransferService() {
-        super("FileTransferService");
+	public TransferService() {
+        super("TransferService");
     }
 
 	@Override
@@ -78,21 +76,18 @@ public class FileTransferService extends IntentService {
                 Log.e(ChatActivity.TAG, e.getMessage());
             }
         } 
-//        else if (intent.getAction().equals(ACTION_SEND_CONTACT)) {
-//        	Contact contact = (Contact) intent.getExtras().getSerializable(CONTACT);
-//        	
-//        	try {
-//        		//is = new ObjectInputStream(new BufferedInputStream(socket.getInputStream()));  
-//                ObjectOutputStream os = new ObjectOutputStream(((ShareApplication) getApplication()).getoStream());
-//                os.writeUTF("contact");
-//                os.flush();
-//                
-//                os.writeObject(contact);
-//                os.flush();                
-//        	} catch (Exception e) {
-//        		Log.e(ChatActivity.TAG, e.getMessage());
-//        	}
-//        }
+        else if (intent.getAction().equals(ACTION_SEND_CONTACT)) {
+        	Contact contact = (Contact) intent.getExtras().getSerializable(CONTACT);
+        	
+        	try {
+        		Socket socket = ((ShareApplication) getApplication()).getContactTransferSocket();
+                ObjectOutputStream os = new ObjectOutputStream(socket.getOutputStream());
+                os.writeObject(contact);
+                os.flush();                
+        	} catch (Exception e) {
+        		Log.e(ChatActivity.TAG, e.getMessage());
+        	}
+        }
 	}
 
 }

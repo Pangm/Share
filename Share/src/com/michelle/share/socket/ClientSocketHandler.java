@@ -35,8 +35,10 @@ public class ClientSocketHandler extends Thread {
             	manager = new ChatManager(socket, handler);
             } else if (type == 1) {
             	manager = new FileTransferManager(socket, handler);
+            } else if (type == 2) {
+            	manager = new ContactTransferManager(socket, handler);
             }
-            
+             
             new Thread(manager).start();
         } catch (IOException e) {
             e.printStackTrace();

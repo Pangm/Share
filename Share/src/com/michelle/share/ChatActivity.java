@@ -7,7 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.michelle.share.socket.FileTransferService;
+import com.michelle.share.socket.TransferService;
 import com.michelle.share.socket.MsgType;
 import com.michelle.share.socket.ShareChatService;
 import com.michelle.share.socket.ShareChatService.MyBinder;
@@ -191,13 +191,16 @@ public class ChatActivity extends Activity {
 
         // User has picked an image. Transfer it to group owner i.e peer using
         // FileTransferService.
+        if (resultCode == 0 || data == null) {
+			return;
+		}
         Uri uri = data.getData();
         if (requestCode == CHOOSE_PHOTO_RESULT_CODE) {
         	//myBinder.sendMsg(MsgType.PHOTO, uri.getPath());
         	
-        	Intent serviceIntent = new Intent(this, FileTransferService.class);
-            serviceIntent.setAction(FileTransferService.ACTION_SEND_FILE);
-            serviceIntent.putExtra(FileTransferService.EXTRAS_FILE_PATH, uri.toString());
+        	Intent serviceIntent = new Intent(this, TransferService.class);
+            serviceIntent.setAction(TransferService.ACTION_SEND_FILE);
+            serviceIntent.putExtra(TransferService.EXTRAS_FILE_PATH, uri.toString());
             startService(serviceIntent);
             
             //messages.add(new ChatMessage(ChatMessage.MESSAGE_TO, ))
@@ -246,10 +249,10 @@ public class ChatActivity extends Activity {
         	    
         	    
         	    Contact contact = new Contact(name, phoneDetails, emailDetails, img);
-        	    Intent serviceIntent = new Intent(this, FileTransferService.class);
-                serviceIntent.setAction(FileTransferService.ACTION_SEND_CONTACT);
-                serviceIntent.putExtra(FileTransferService.EXTRAS_FILE_PATH, uri.toString());
-                serviceIntent.putExtra(FileTransferService.CONTACT, contact);
+        	    Intent serviceIntent = new Intent(this, TransferService.class);
+                serviceIntent.setAction(TransferService.ACTION_SEND_CONTACT);
+                serviceIntent.putExtra(TransferService.EXTRAS_FILE_PATH, uri.toString());
+                serviceIntent.putExtra(TransferService.CONTACT, contact);
                 startService(serviceIntent);
         	}
         	

@@ -3,6 +3,7 @@ package com.michelle.share.socket;
 import java.io.IOException;
 
 import com.michelle.share.ChatMessage;
+import com.michelle.share.Contact;
 import com.michelle.share.FriendsFragment.MessageTarget;
 import com.michelle.share.ImageFile;
 import com.michelle.share.db.ImageFileService;
@@ -28,14 +29,19 @@ public class ShareChatService extends Service implements Handler.Callback,
 	public static final int FILE_READ = 0x400 + 3;
 	public static final int FILE_TRANSFER_HANDLE = 0x400 + 4;
 	public static final int FILE_NAME = 0x400 + 5;
+	public static final int CONTACT_TRANSFER_HANDLE = 0x400 + 6;
+	public static final int CONTACT_READ = 0x400 + 7;
 	
 	static final int SERVER_PORT = 4545;
 	static final int SERVER_FILE_PORT = 4546;
+	static final int SERVER_CONTACT_PORT = 4547;
 	private static final String TAG = "Share ChatSevice";
+	
 	
 	
 	private ChatManager chatManager = null;
 	private FileTransferManager fileTransferManager = null;
+	private ContactTransferManager contactTransferManager = null;
 	/**
 	 * @return the fileTransferManager
 	 */
@@ -54,41 +60,54 @@ public class ShareChatService extends Service implements Handler.Callback,
 
 	@Override
 	public boolean handleMessage(Message msg) {
+		Intent intent = null;
+		Time time = null;
+		ChatMessage chatMsg = null;
 		switch (msg.what) {
 		case MESSAGE_READ:
 			byte[] readBuf = (byte[]) msg.obj;
 			// construct a string from the valid bytes in the buffer
 			String readMessage = new String(readBuf, 0, msg.arg1);
 			Log.d(TAG, readMessage);
-			Time time = new Time();
+			time = new Time();
 			time.setToNow();
-			ChatMessage chatMsg = new ChatMessage(ChatMessage.MESSAGE_FROM,
+			chatMsg = new ChatMessage(ChatMessage.MESSAGE_FROM,
 					readMessage, time);
 			// (chatFragment).pushMessage("Buddy: " + readMessage);
 			((ShareApplication) getApplication()).getMessages().add(chatMsg);
 
-			Intent intent = new Intent();
+			intent = new Intent();
 			intent.putExtra("Msg", readMessage);
 			intent.setAction("android.intent.action.MSG_RECEIVE");// action与接收器相同
 			sendBroadcast(intent);
 			break;
 		case FILE_READ:
 			//Log.d(TAG, (String) msg.obj);
-			Time time2 = new Time();
-			time2.setToNow();
-			ChatMessage chatMsg2 = new ChatMessage(ChatMessage.MESSAGE_FROM,
-					msg.obj, time2);
-			((ShareApplication) getApplication()).getMessages().add(chatMsg2);
-//			ImageFileService imageFileService = new ImageFileService(this((ShareApplication) getApplication()).mainActivity);
+			time = new Time();
+			time.setToNow();
+			chatMsg = new ChatMessage(ChatMessage.MESSAGE_FROM,
+					msg.obj, time);
+			((ShareApplication) getApplication()).getMessages().add(chatMsg);
 			ImageFileService imageFileService = new ImageFileService(this);
 			ImageFile imageFile = (ImageFile) msg.obj;
 			
 			imageFileService.save(imageFile);
 			
-			Intent intent2 = new Intent();
-			//intent2.putExtra("Msg", (ImageFile) msg.obj);
-			intent2.setAction("android.intent.action.MSG_RECEIVE");// action与接收器相同
-			sendBroadcast(intent2);
+			intent = new Intent();
+			intent.setAction("android.intent.action.MSG_RECEIVE");// action与接收器相同
+			sendBroadcast(intent);
+			break;
+		case CONTACT_READ:
+			Contact Contact = (Contact) msg.obj;
+			Log.d(TAG, Contact.getName());
+			time = new Time();
+			time.setToNow();
+			chatMsg = new ChatMessage(ChatMessage.MESSAGE_FROM, msg.obj, time);
+			((ShareApplication) getApplication()).getMessages().add(chatMsg);
+			
+			intent = new Intent();
+			intent.setAction("android.intent.action.MSG_RECEIVE");// action与接收器相同
+			sendBroadcast(intent);
 			break;
 		case FILE_NAME:
 			byte[] readBuf1 = (byte[]) msg.obj;
@@ -111,13 +130,16 @@ public class ShareChatService extends Service implements Handler.Callback,
 			Object obj = msg.obj;
 			// (chatFragment).setChatManager((ChatManager) obj);
 			chatManager = (ChatManager) obj;
-			((ShareApplication) getApplication()).setChatSocket(((ChatManager) obj).getSocket());
+			((ShareApplication) getApplication()).setChatSocket(chatManager.getSocket());
 			break;
 		case FILE_TRANSFER_HANDLE:
 			fileTransferManager = (FileTransferManager) msg.obj;
 			((ShareApplication) getApplication()).setoStream(fileTransferManager.getoStream());
-			((ShareApplication) getApplication()).setChatSocket(fileTransferManager.getSocket());
-			
+			((ShareApplication) getApplication()).setFileTransferSocket(fileTransferManager.getSocket());
+			break;
+		case CONTACT_TRANSFER_HANDLE:
+			contactTransferManager = (ContactTransferManager) msg.obj;
+			((ShareApplication) getApplication()).setContactTransferSocket(contactTransferManager.getSocket());
 			break;
 		default:
 			break;
@@ -177,6 +199,7 @@ public class ShareChatService extends Service implements Handler.Callback,
 		public void connect(WifiP2pInfo p2pInfo) {
 			Thread Chathandler = null;
 			Thread FileTransferhandler = null;
+			Thread ContactTransferhandler = null;
 
 			if (p2pInfo.isGroupOwner) {
 				Log.d(TAG, "Connected as group owner");
@@ -188,6 +211,11 @@ public class ShareChatService extends Service implements Handler.Callback,
 					FileTransferhandler = new GroupOwnerSocketHandler(getHandler(),
 							ShareChatService.SERVER_FILE_PORT, 1);
 					FileTransferhandler.start();
+					
+					ContactTransferhandler = new GroupOwnerSocketHandler(getHandler(),
+							ShareChatService.SERVER_CONTACT_PORT, 2);
+					ContactTransferhandler.start();
+					
 				} catch (IOException e) {
 					Log.d(TAG,
 							"Failed to create a server thread - "
@@ -196,13 +224,25 @@ public class ShareChatService extends Service implements Handler.Callback,
 				}
 			} else {
 				Log.d(TAG, "Connected as peer");
-				Chathandler = new ClientSocketHandler(getHandler(),
-						p2pInfo.groupOwnerAddress, ShareChatService.SERVER_PORT, 0);
-				Chathandler.start();
-				
-				FileTransferhandler = new ClientSocketHandler(getHandler(),
-						p2pInfo.groupOwnerAddress, ShareChatService.SERVER_FILE_PORT, 1);
-				FileTransferhandler.start();
+				try {
+					Chathandler = new ClientSocketHandler(getHandler(),
+							p2pInfo.groupOwnerAddress, ShareChatService.SERVER_PORT, 0);
+					Chathandler.start();
+					
+					FileTransferhandler = new ClientSocketHandler(getHandler(),
+							p2pInfo.groupOwnerAddress, ShareChatService.SERVER_FILE_PORT, 1);
+					FileTransferhandler.start();
+					
+					ContactTransferhandler = new ClientSocketHandler(getHandler(),
+							p2pInfo.groupOwnerAddress, ShareChatService.SERVER_CONTACT_PORT, 2);
+					ContactTransferhandler.start();
+					
+				} catch (Exception e) {
+					Log.d(TAG,
+							"Failed to create a server thread - "
+									+ e.getMessage());
+					return;
+				}
 			}
 		}
 

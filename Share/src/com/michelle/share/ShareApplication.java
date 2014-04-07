@@ -23,7 +23,8 @@ public class ShareApplication extends Application {
 	private WifiP2pInfo info = null;
 	private OutputStream oStream;
 	private Socket chatSocket;
-	private Socket transferSocket;
+	private Socket fileTransferSocket;
+	private Socket ContactTransferSocket;
 	public Activity mainActivity;
 	
 	/**
@@ -43,15 +44,29 @@ public class ShareApplication extends Application {
 	/**
 	 * @return the transferSocket
 	 */
-	public Socket getTransferSocket() {
-		return transferSocket;
+	public Socket getFileTransferSocket() {
+		return fileTransferSocket;
 	}
 
 	/**
 	 * @param transferSocket the transferSocket to set
 	 */
-	public void setTransferSocket(Socket transferSocket) {
-		this.transferSocket = transferSocket;
+	public void setFileTransferSocket(Socket fileTransferSocket) {
+		this.fileTransferSocket = fileTransferSocket;
+	}
+
+	/**
+	 * @return the contactTransferSocket
+	 */
+	public Socket getContactTransferSocket() {
+		return ContactTransferSocket;
+	}
+
+	/**
+	 * @param contactTransferSocket the contactTransferSocket to set
+	 */
+	public void setContactTransferSocket(Socket contactTransferSocket) {
+		ContactTransferSocket = contactTransferSocket;
 	}
 
 	/**

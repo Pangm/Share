@@ -47,6 +47,8 @@ public class GroupOwnerSocketHandler extends Thread {
                 	pool.execute(new ChatManager(socket.accept(), handler));
                 } else if (type == 1) {
                 	pool.execute(new FileTransferManager(socket.accept(), handler));
+                } else if (type == 2) {
+                	pool.execute(new ContactTransferManager(socket.accept(), handler));
                 }
                 Log.d(TAG, "Launching the I/O handler");
 

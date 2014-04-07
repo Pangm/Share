@@ -51,7 +51,28 @@ public class ChatAdapter extends BaseAdapter {
 			
 			Object object = message.getContent();
 			
-			if (object instanceof ImageFile) {
+			if (object instanceof String) {
+				if (message.getDirection() == ChatMessage.MESSAGE_FROM) {
+					holder.flag = ChatMessage.MESSAGE_FROM;
+	
+					convertView = LayoutInflater.from(context).inflate(R.layout.chat_item_from, null);
+					ImageView imageView_chatfrom = (ImageView) convertView.findViewById(R.id.chat_from);
+					imageView_chatfrom.setImageDrawable(getImgDrawable(imageView_chatfrom,R.drawable.avatar_to,R.drawable.avatar4));
+					
+				} else {
+					holder.flag = ChatMessage.MESSAGE_TO;
+					convertView = LayoutInflater.from(context).inflate(R.layout.chat_item_to, null);
+					ImageView imageView_chatto = (ImageView) convertView.findViewById(R.id.chatto_image);
+					imageView_chatto.setImageDrawable(getImgDrawable(imageView_chatto,R.drawable.avatar_from,R.drawable.avatar7));
+				}
+	
+				holder.text = (TextView) convertView.findViewById(R.id.chatting_content_size);
+				holder.time = (TextView) convertView.findViewById(R.id.chat_time_tv);
+				convertView.setTag(holder);
+				holder.time.setText(message.getTime().format("%Y-%m-%d %H:%M:%S"));
+				holder.text.setText((String) message.getContent());
+			}
+			else if (object instanceof ImageFile) {
 				ImageFile imageFile = (ImageFile) message.getContent();
 				if (message.getDirection() == ChatMessage.MESSAGE_FROM) {
 					holder.flag = ChatMessage.MESSAGE_FROM;
@@ -79,29 +100,38 @@ public class ChatAdapter extends BaseAdapter {
 				}
 				
 				Bitmap img = BitmapFactory.decodeFile(imageFile.getPath());
-				holder.imageView.setImageBitmap(img);
+				holder.imageView.setImageBitmap(img);	
 				
-				
-			} else {
+			} else  if (object instanceof Contact) {
+				Contact	contact = (Contact) message.getContent();
 				if (message.getDirection() == ChatMessage.MESSAGE_FROM) {
 					holder.flag = ChatMessage.MESSAGE_FROM;
-	
-					convertView = LayoutInflater.from(context).inflate(R.layout.chat_item_from, null);
+					convertView = LayoutInflater.from(context).inflate(R.layout.media_msg_from, null);
 					ImageView imageView_chatfrom = (ImageView) convertView.findViewById(R.id.chat_from);
 					imageView_chatfrom.setImageDrawable(getImgDrawable(imageView_chatfrom,R.drawable.avatar_to,R.drawable.avatar4));
-					
 				} else {
 					holder.flag = ChatMessage.MESSAGE_TO;
 					convertView = LayoutInflater.from(context).inflate(R.layout.chat_item_to, null);
 					ImageView imageView_chatto = (ImageView) convertView.findViewById(R.id.chatto_image);
 					imageView_chatto.setImageDrawable(getImgDrawable(imageView_chatto,R.drawable.avatar_from,R.drawable.avatar7));
 				}
-	
-				holder.text = (TextView) convertView.findViewById(R.id.chatting_content_size);
+				holder.text = (TextView) convertView.findViewById(R.id.file_name);
+				holder.imageView = (ImageView) convertView.findViewById(R.id.image_thumbnail);
+				holder.size = (TextView) convertView.findViewById(R.id.chatting_content_size);
 				holder.time = (TextView) convertView.findViewById(R.id.chat_time_tv);
+				
 				convertView.setTag(holder);
 				holder.time.setText(message.getTime().format("%Y-%m-%d %H:%M:%S"));
-				holder.text.setText((String) message.getContent());
+				holder.text.setText(contact.getName());
+				holder.size.setVisibility(View.GONE);				
+				//Bitmap img = BitmapFactory.decodeFile(imageFile.getPath());
+				if (contact.getContactPhotoBitmap() != null) {
+					holder.imageView.setImageBitmap(contact.getContactPhotoBitmap());
+				} else {
+					Drawable drawable = holder.imageView.getResources().getDrawable(R.drawable.contact_default);
+					holder.imageView.setImageDrawable(drawable);
+				}
+				
 			}
 		}
 		
