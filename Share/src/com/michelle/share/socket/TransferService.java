@@ -16,7 +16,9 @@ import android.app.IntentService;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.Bundle;
 import android.util.Log;
 
 public class TransferService extends IntentService {
@@ -78,6 +80,9 @@ public class TransferService extends IntentService {
         } 
         else if (intent.getAction().equals(ACTION_SEND_CONTACT)) {
         	Contact contact = (Contact) intent.getExtras().getSerializable(CONTACT);
+//        	Bundle bundle = intent.getBundleExtra("data");
+//        	Contact contact = (Contact) bundle.getSerializable(CONTACT);
+//        	contact.setContactPhotoBitmap((Bitmap) bundle.getParcelable("bitmap"));
         	
         	try {
         		Socket socket = ((ShareApplication) getApplication()).getContactTransferSocket();

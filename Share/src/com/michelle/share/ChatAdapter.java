@@ -2,6 +2,7 @@ package com.michelle.share;
 
 import java.io.File;
 import java.io.InputStream;
+import java.text.DecimalFormat;
 import java.util.List;
 
 import android.content.Context;
@@ -93,10 +94,12 @@ public class ChatAdapter extends BaseAdapter {
 				convertView.setTag(holder);
 				holder.time.setText(imageFile.getTime().format("%Y-%m-%d %H:%M:%S"));
 				holder.text.setText(imageFile.getName());
+				float fileSize = imageFile.getSize();
 				if (imageFile.getSize() <= 512) {
-					holder.size.setText(imageFile.getSize() + " KB");
+					holder.size.setText(fileSize + " KB");
 				} else {
-					holder.size.setText(imageFile.getSize()/1000 + " MB");
+					fileSize /= 1024;
+					holder.size.setText(new  DecimalFormat(".##").format(fileSize) + " MB");
 				}
 				
 				Bitmap img = BitmapFactory.decodeFile(imageFile.getPath());
@@ -125,8 +128,11 @@ public class ChatAdapter extends BaseAdapter {
 				holder.text.setText(contact.getName());
 				holder.size.setVisibility(View.GONE);				
 				//Bitmap img = BitmapFactory.decodeFile(imageFile.getPath());
-				if (contact.getContactPhotoBitmap() != null) {
-					holder.imageView.setImageBitmap(contact.getContactPhotoBitmap());
+				if (contact.getContactPhotoBytes() != null) {
+
+					Bitmap bmp = BitmapFactory.decodeByteArray(contact.getContactPhotoBytes(), 
+							0, contact.getContactPhotoBytes().length);
+					holder.imageView.setImageBitmap(bmp);
 				} else {
 					Drawable drawable = holder.imageView.getResources().getDrawable(R.drawable.contact_default);
 					holder.imageView.setImageDrawable(drawable);
@@ -139,6 +145,24 @@ public class ChatAdapter extends BaseAdapter {
 		return convertView;
 	}
 	
+	/* (non-Javadoc)
+	 * @see android.widget.BaseAdapter#getItemViewType(int)
+	 */
+	@Override
+	public int getItemViewType(int position) {
+		// TODO Auto-generated method stub
+		return super.getItemViewType(position);
+	}
+
+	/* (non-Javadoc)
+	 * @see android.widget.BaseAdapter#getViewTypeCount()
+	 */
+	@Override
+	public int getViewTypeCount() {
+		// TODO Auto-generated method stub
+		return super.getViewTypeCount();
+	}
+
 	static class ViewHolder {
 		TextView text;
 		int flag;

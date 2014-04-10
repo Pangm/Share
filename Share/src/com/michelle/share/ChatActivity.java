@@ -1,5 +1,7 @@
 package com.michelle.share;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -16,16 +18,20 @@ import android.net.Uri;
 import android.net.wifi.p2p.WifiP2pInfo;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.os.RemoteException;
 import android.provider.ContactsContract;
 import android.provider.MediaStore.MediaColumns;
 import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
+import android.content.ContentProviderOperation;
+import android.content.ContentProviderResult;
 import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.OperationApplicationException;
 import android.content.ServiceConnection;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -54,6 +60,34 @@ public class ChatActivity extends Activity {
 	protected static final int CHOOSE_MUSIC_RESULT_CODE = 22;
 	protected static final int CHOOSE_VIDEO_RESULT_CODE = 23;
 	protected static final int CHOOSE_CONTACT_RESULT_CODE = 24;
+	//[content://com.android.contacts/raw_contacts]  
+    private static final Uri RAW_CONTACTS_URI = ContactsContract.RawContacts.CONTENT_URI;  
+    //[content://com.android.contacts/data]  
+    private static final Uri DATA_URI = ContactsContract.Data.CONTENT_URI;  
+      
+    private static final String ACCOUNT_TYPE = ContactsContract.RawContacts.ACCOUNT_TYPE;  
+    private static final String ACCOUNT_NAME = ContactsContract.RawContacts.ACCOUNT_NAME;  
+      
+    private static final String RAW_CONTACT_ID = ContactsContract.Data.RAW_CONTACT_ID;  
+    private static final String MIMETYPE = ContactsContract.Data.MIMETYPE;  
+      
+    private static final String NAME_ITEM_TYPE = ContactsContract.CommonDataKinds.StructuredName.CONTENT_ITEM_TYPE;  
+    private static final String DISPLAY_NAME = ContactsContract.CommonDataKinds.StructuredName.DISPLAY_NAME;  
+      
+    private static final String PHONE_ITEM_TYPE = ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE;  
+    private static final String PHONE_NUMBER = ContactsContract.CommonDataKinds.Phone.NUMBER;  
+    private static final String PHONE_TYPE = ContactsContract.CommonDataKinds.Phone.TYPE;  
+    private static final int PHONE_TYPE_HOME = ContactsContract.CommonDataKinds.Phone.TYPE_HOME;  
+    private static final int PHONE_TYPE_MOBILE = ContactsContract.CommonDataKinds.Phone.TYPE_MOBILE;  
+      
+    private static final String EMAIL_ITEM_TYPE = ContactsContract.CommonDataKinds.Email.CONTENT_ITEM_TYPE;  
+    private static final String EMAIL_DATA = ContactsContract.CommonDataKinds.Email.DATA;  
+    private static final String EMAIL_TYPE = ContactsContract.CommonDataKinds.Email.TYPE;  
+    private static final int EMAIL_TYPE_HOME = ContactsContract.CommonDataKinds.Email.TYPE_HOME;  
+    private static final int EMAIL_TYPE_WORK = ContactsContract.CommonDataKinds.Email.TYPE_WORK;  
+  
+    private static final String AUTHORITY = ContactsContract.AUTHORITY;  
+
 	private ListView chatList = null;
 	private ChatAdapter chatAdapter = null;
 	private List<ChatMessage> messages;
@@ -91,6 +125,86 @@ public class ChatActivity extends Activity {
 		messages = ((ShareApplication) getApplication()).getMessages();
 		chatAdapter = new ChatAdapter(this, messages);
 		chatList.setAdapter(chatAdapter);
+		
+		chatList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view,
+					int position, long id) {
+				ChatMessage msg = messages.get(position);
+				
+				if (msg.getDirection() == ChatMessage.MESSAGE_TO) {
+					// the message was sent by ourselves
+					return;
+				}
+				
+				if (msg.getContent() instanceof ImageFile) {
+					String path = ((ImageFile) msg.getContent()).getPath();
+					Intent intent = new Intent();
+					intent.setAction(android.content.Intent.ACTION_VIEW);
+					intent.setDataAndType(Uri.parse("file://" + path), "image/*");
+					startActivity(intent);
+				} else 	if (msg.getContent() instanceof Contact) {
+					// the received message contained contact
+					Contact contact = (Contact) msg.getContent();
+					ArrayList<ContentProviderOperation> operations = new ArrayList<ContentProviderOperation>();
+					
+					ContentProviderOperation operation = ContentProviderOperation.newInsert(RAW_CONTACTS_URI)  
+                            .withValue(ACCOUNT_TYPE, null)  
+                            .withValue(ACCOUNT_NAME, null)  
+                            .build(); 
+					
+					operations.add(operation);
+					
+					// add contact name
+					operation = ContentProviderOperation.newInsert(DATA_URI)
+							.withValueBackReference(RAW_CONTACT_ID, 0)  
+                            .withValue(MIMETYPE, NAME_ITEM_TYPE)  
+                            .withValue(DISPLAY_NAME, contact.getName())  
+                            .build(); 
+					
+					// add contact phones
+					for (String phoneNumer : contact.getPhones()) {	
+				        operation = ContentProviderOperation.newInsert(DATA_URI)  
+				                                    .withValueBackReference(RAW_CONTACT_ID, 0)  
+				                                    .withValue(MIMETYPE, PHONE_ITEM_TYPE)  
+				                                    .withValue(PHONE_TYPE, PHONE_TYPE_MOBILE)  
+				                                    .withValue(PHONE_NUMBER, phoneNumer)
+				                                    .build();  
+				        operations.add(operation);
+					}
+					
+					// add contact mails
+					for (String mail : contact.getMails()) {
+						operation = ContentProviderOperation.newInsert(DATA_URI)  
+                                .withValueBackReference(RAW_CONTACT_ID, 0)  
+                                .withValue(MIMETYPE, EMAIL_ITEM_TYPE)  
+                                .withValue(EMAIL_TYPE, EMAIL_TYPE_WORK)  
+                                .withValue(EMAIL_DATA, mail)  
+                                .build();  
+						operations.add(operation);
+					}
+					
+					ContentResolver resolver = view.getContext().getContentResolver();  
+				    
+			        ContentProviderResult[] results;
+					try {
+						results = resolver.applyBatch(AUTHORITY, operations);
+						for (ContentProviderResult result : results) {  
+				            Log.i(TAG, result.uri.toString());  
+				        }
+					} catch (RemoteException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (OperationApplicationException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}  			  
+				}
+				
+			}
+			
+		});
 		
 		sendBtn = (Button) findViewById(R.id.btn_send);
 		mgsText = (EditText) findViewById(R.id.msg_text);
@@ -191,7 +305,7 @@ public class ChatActivity extends Activity {
 
         // User has picked an image. Transfer it to group owner i.e peer using
         // FileTransferService.
-        if (resultCode == 0 || data == null) {
+        if (resultCode == Activity.RESULT_CANCELED || data == null) {
 			return;
 		}
         Uri uri = data.getData();
@@ -247,13 +361,28 @@ public class ChatActivity extends Activity {
         	    emails.close();
         	    cursor.close();
         	    
-        	    
-        	    Contact contact = new Contact(name, phoneDetails, emailDetails, img);
-        	    Intent serviceIntent = new Intent(this, TransferService.class);
-                serviceIntent.setAction(TransferService.ACTION_SEND_CONTACT);
-                serviceIntent.putExtra(TransferService.EXTRAS_FILE_PATH, uri.toString());
-                serviceIntent.putExtra(TransferService.CONTACT, contact);
-                startService(serviceIntent);
+        	    try {
+		    	    Contact contact = new Contact(name, phoneDetails, emailDetails, null);
+		    	    if (img != null) {
+			    	    ByteArrayOutputStream stream = new ByteArrayOutputStream();
+			    	    img.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+			    	    byte[] byteArray = stream.toByteArray();
+			    	    contact.setContactPhotoBytes(byteArray);
+			    	    contact.setContactPhotoBitmap(null);
+		    	    }		    	    
+		    	    Intent serviceIntent = new Intent(this, TransferService.class);
+		            serviceIntent.setAction(TransferService.ACTION_SEND_CONTACT);
+		      //      serviceIntent.putExtra(TransferService.EXTRAS_FILE_PATH, uri.toString());
+		            serviceIntent.putExtra(TransferService.CONTACT, contact);
+		            
+//		            Bundle bundle = new Bundle();
+//		            bundle.putSerializable(TransferService.CONTACT, contact);
+//		            bundle.putParcelable("bitmap", img);
+//		            serviceIntent.putExtra("data", bundle);
+		            startService(serviceIntent);
+                } catch (Exception e) {
+                	e.printStackTrace();
+                }
         	}
         	
         }

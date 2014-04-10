@@ -16,6 +16,8 @@ import java.util.Arrays;
 import com.michelle.share.Contact;
 import com.michelle.share.ImageFile;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Environment;
 import android.os.Handler;
 import android.text.format.Time;

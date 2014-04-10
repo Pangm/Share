@@ -4,16 +4,22 @@ import java.io.Serializable;
 import java.util.ArrayList;
 
 import android.graphics.Bitmap;
+import android.os.Parcel;
+import android.os.Parcelable;
 
-public class Contact implements Serializable{
+public class Contact implements Serializable {
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 415056597730896540L;
-	private String name = "";
+	/**
+	 * 
+	 */
+	private String name = null;
 	private ArrayList<String> phones = null;
 	private ArrayList<String> mails = null;
 	private Bitmap contactPhotoBitmap = null;
+	private byte[] contactPhotoBytes = null;
 	
 	public Contact() {
 	}
@@ -25,6 +31,20 @@ public class Contact implements Serializable{
 		this.phones = phones;
 		this.mails = mails;
 		this.contactPhotoBitmap = contactPhotoBitmap;
+	}
+
+	/**
+	 * @return the contactPhotoBytes
+	 */
+	public byte[] getContactPhotoBytes() {
+		return contactPhotoBytes;
+	}
+
+	/**
+	 * @param contactPhotoBytes the contactPhotoBytes to set
+	 */
+	public void setContactPhotoBytes(byte[] contactPhotoBytes) {
+		this.contactPhotoBytes = contactPhotoBytes;
 	}
 
 	/**
@@ -81,7 +101,5 @@ public class Contact implements Serializable{
 	 */
 	public void setContactPhotoBitmap(Bitmap contactPhotoBitmap) {
 		this.contactPhotoBitmap = contactPhotoBitmap;
-	}
-	
-	
+	}	
 }

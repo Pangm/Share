@@ -7,4 +7,7 @@
     <color name="white">#FFFFFFFF</color>
     <color name="chat_layout_bg">#DCDCDC</color>
     <color name="chat_time_bg">#FF56616C</color>
+     <color name="transparent">#00000000</color>
+    <color name="gold">#b89766</color>
+    <color name="select">#98aacc</color>
 </resources>
