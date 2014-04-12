@@ -6,6 +6,8 @@ import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -13,9 +15,13 @@ import com.michelle.share.socket.TransferService;
 import com.michelle.share.socket.MsgType;
 import com.michelle.share.socket.ShareChatService;
 import com.michelle.share.socket.ShareChatService.MyBinder;
+import com.michelle.share.widget.RefreshListView;
+import com.michelle.share.widget.RefreshListView.IOnLoadMoreListener;
+import com.michelle.share.widget.RefreshListView.IOnRefreshListener;
 
 import android.net.Uri;
 import android.net.wifi.p2p.WifiP2pInfo;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.RemoteException;
@@ -52,7 +58,7 @@ import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
 
-public class ChatActivity extends Activity {
+public class ChatActivity extends Activity implements IOnRefreshListener, IOnLoadMoreListener{
 
 	public static final String TAG = "ChatActivity";
 	protected static final int CHOOSE_FILE_RESULT_CODE = 20;
@@ -88,13 +94,16 @@ public class ChatActivity extends Activity {
   
     private static final String AUTHORITY = ContactsContract.AUTHORITY;  
 
-	private ListView chatList = null;
+	private RefreshListView chatList = null;
 	private ChatAdapter chatAdapter = null;
 	private List<ChatMessage> messages;
+	private LinkedList<ChatMessage> chatData;
 	private Button sendBtn;
 	private EditText mgsText;
 	private MyBinder myBinder = null;
 	private MyReceiver receiver;
+	
+	private RefreshDataAsynTask mRefreshAsynTask;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -121,10 +130,21 @@ public class ChatActivity extends Activity {
 		registerReceiver(receiver,filter);
         
 		// set chatList adapter
-		chatList = (ListView) findViewById(R.id.chat_list);
+		chatList = (RefreshListView) findViewById(R.id.chat_list);
 		messages = ((ShareApplication) getApplication()).getMessages();
-		chatAdapter = new ChatAdapter(this, messages);
+		
+		chatData = new LinkedList<ChatMessage>();
+		
+		int listSize = messages.size();
+		if (listSize < 6) {
+			chatData.addAll(messages);
+		} else {
+			chatData.addAll(messages.subList(messages.size() - 5, messages.size()));
+		}
+		
+		chatAdapter = new ChatAdapter(this, chatData);
 		chatList.setAdapter(chatAdapter);
+		chatList.setOnRefreshListener(this);
 		
 		chatList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
@@ -230,8 +250,10 @@ public class ChatActivity extends Activity {
 				Time time = new Time();
 				time.setToNow();
 				messages.add(new ChatMessage(ChatMessage.MESSAGE_TO, msg, time));
-				myBinder.sendMsg(MsgType.MESSAGE, msg);				
-				chatAdapter.notifyDataSetChanged();
+				myBinder.sendMsg(MsgType.MESSAGE, msg);
+				chatData.add(messages.get(messages.size() - 1));
+				chatAdapter.refreshData(chatData);
+				chatList.onRefreshComplete();
 			}
 		});
 		
@@ -372,13 +394,8 @@ public class ChatActivity extends Activity {
 		    	    }		    	    
 		    	    Intent serviceIntent = new Intent(this, TransferService.class);
 		            serviceIntent.setAction(TransferService.ACTION_SEND_CONTACT);
-		      //      serviceIntent.putExtra(TransferService.EXTRAS_FILE_PATH, uri.toString());
 		            serviceIntent.putExtra(TransferService.CONTACT, contact);
 		            
-//		            Bundle bundle = new Bundle();
-//		            bundle.putSerializable(TransferService.CONTACT, contact);
-//		            bundle.putParcelable("bitmap", img);
-//		            serviceIntent.putExtra("data", bundle);
 		            startService(serviceIntent);
                 } catch (Exception e) {
                 	e.printStackTrace();
@@ -475,10 +492,56 @@ public class ChatActivity extends Activity {
 		public void onReceive(Context context, Intent intent) {
 			System.out.println("OnReceiver");
 			// notify receive a message. 
+			chatData.add(messages.get(messages.size()-1));
 			chatAdapter.notifyDataSetChanged(); 
 		}
 		public MyReceiver(){
 			System.out.println("MyReceiver");
 		} 
+	}
+
+	@Override
+	public void OnLoadMore() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void OnRefresh() {
+		// TODO Auto-generated method stub
+		mRefreshAsynTask = new RefreshDataAsynTask();
+		mRefreshAsynTask.execute();
+	}
+	
+	private int index = 5;
+	
+	class RefreshDataAsynTask extends AsyncTask<Void , Void, Void>
+	{
+
+		@Override
+		protected Void doInBackground(Void... arg0) {
+			try {
+				Thread.sleep(2000);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+			int count = messages.size() - chatData.size();
+			if (count > 5) {
+				Iterator iterator = messages.listIterator(count);
+				chatData.addFirst(messages.get(count - 1));	
+			}
+			
+			return null;
+		}
+
+		@Override
+		protected void onPostExecute(Void result) {
+			// TODO Auto-generated method stub
+		
+			chatAdapter.refreshData(chatData);
+			chatList.onRefreshComplete();
+		}		
 	}
 }

@@ -104,7 +104,7 @@ public class RefreshListView extends ListView implements OnScrollListener, OnCli
 	{
 		initHeadView(context);
 		
-		initLoadMoreView(context);
+//		initLoadMoreView(context);
 		
 		setOnScrollListener(this);
 	}

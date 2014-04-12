@@ -27,6 +27,12 @@ public class ChatAdapter extends BaseAdapter {
 		this.context = context;
 		this.chatMessages = messages;
 	}
+	
+	public void refreshData(List<ChatMessage> messages)
+	{
+		this.chatMessages = messages;
+		notifyDataSetChanged();
+	}
 
 	@Override
 	public int getCount() {
