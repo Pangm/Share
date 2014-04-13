@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
 
     <!--
         Base application theme, dependent on API level. This theme is replaced
@@ -30,10 +30,10 @@
     </style>  
     
 	<style name="ChatUIText">  
-        <item name="android:textSize">15.0dip</item>  
+        <item name="android:textSize">15.0dip</item>
         <item name="android:textColor">#ff000000</item>  
         <item name="android:layout_width">wrap_content</item>  
-        <item name="android:layout_height">wrap_content</item>  
+        <item name="android:layout_height">wrap_content</item> 
         <item name="android:maxWidth">200.0dip</item>  
     </style>
 </resources>

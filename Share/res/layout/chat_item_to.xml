@@ -36,16 +36,16 @@
 
         <FrameLayout
             android:id="@+id/d"
-            android:layout_width="40dip"
-            android:layout_height="40dip"
+            android:layout_width="60dip"
+            android:layout_height="60dip"
             android:layout_alignParentRight="true"
             android:layout_alignParentTop="true"
             android:background="@drawable/avatar_from"  >
 
             <com.michelle.share.widget.CircleImageView
                 android:id="@+id/chatto_image"
-                android:layout_width="32dip"
-                android:layout_height="32dip"
+                android:layout_width="45dip"
+                android:layout_height="45dip"
                 android:layout_gravity="center"
                 android:src="@drawable/avatar" />
 
@@ -58,8 +58,10 @@
             android:layout_toLeftOf="@+id/d"
             android:autoLink="web"
             android:background="@drawable/chatto_bg"
-            android:paddingLeft="5dp"
-            android:paddingRight="5dp"
+           	android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:paddingTop="15dp"
+            android:paddingBottom="15dp"
             android:text="你好 妹子" />
     </RelativeLayout>
 
