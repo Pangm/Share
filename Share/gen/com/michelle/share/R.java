@@ -9,6 +9,25 @@ package com.michelle.share;
 
 public final class R {
     public static final class attr {
+        /** <p>Must be a color value, in the form of "<code>#<i>rgb</i></code>", "<code>#<i>argb</i></code>",
+"<code>#<i>rrggbb</i></code>", or "<code>#<i>aarrggbb</i></code>".
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+         */
+        public static final int border_color=0x7f010001;
+        /** <p>Must be a dimension value, which is a floating point number appended with a unit such as "<code>14.5sp</code>".
+Available units are: px (pixels), dp (density-independent pixels), sp (scaled pixels based on preferred font size),
+in (inches), mm (millimeters).
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+         */
+        public static final int border_width=0x7f010000;
     }
     public static final class color {
         public static final int black=0x7f040002;
@@ -36,47 +55,48 @@ public final class R {
     }
     public static final class drawable {
         public static final int arrow=0x7f020000;
-        public static final int avatar4=0x7f020001;
-        public static final int avatar7=0x7f020002;
-        public static final int avatar_from=0x7f020003;
-        public static final int avatar_to=0x7f020004;
-        public static final int chat_item_from=0x7f020005;
-        public static final int chat_item_to=0x7f020006;
-        public static final int chatfrom_bg=0x7f020007;
-        public static final int chatfrom_bg_focused=0x7f020008;
-        public static final int chatfrom_bg_normal=0x7f020009;
-        public static final int chatto_bg=0x7f02000a;
-        public static final int chatto_bg_focused=0x7f02000b;
-        public static final int chatto_bg_normal=0x7f02000c;
-        public static final int contact_default=0x7f02000d;
-        public static final int details_view=0x7f02000e;
-        public static final int from=0x7f02000f;
-        public static final int ic_action_discover=0x7f020010;
-        public static final int ic_action_logo=0x7f020011;
-        public static final int ic_action_on_off=0x7f020012;
-        public static final int ic_apk=0x7f020013;
-        public static final int ic_launcher=0x7f020014;
-        public static final int ic_menu_file=0x7f020015;
-        public static final int ic_music=0x7f020016;
-        public static final int ic_photo=0x7f020017;
-        public static final int ic_receive_files=0x7f020018;
-        public static final int ic_sd_rom=0x7f020019;
-        public static final int ic_tel_rom=0x7f02001a;
-        public static final int ic_txt=0x7f02001b;
-        public static final int ic_video=0x7f02001c;
-        public static final int load_more_selected=0x7f02001d;
-        public static final int load_more_selector=0x7f02001e;
-        public static final int machine=0x7f02001f;
-        public static final int msg_text_bg=0x7f020020;
-        public static final int send_btn=0x7f020021;
-        public static final int to=0x7f020022;
+        public static final int avatar=0x7f020001;
+        public static final int avatar4=0x7f020002;
+        public static final int avatar7=0x7f020003;
+        public static final int avatar_from=0x7f020004;
+        public static final int avatar_to=0x7f020005;
+        public static final int chat_item_from=0x7f020006;
+        public static final int chat_item_to=0x7f020007;
+        public static final int chatfrom_bg=0x7f020008;
+        public static final int chatfrom_bg_focused=0x7f020009;
+        public static final int chatfrom_bg_normal=0x7f02000a;
+        public static final int chatto_bg=0x7f02000b;
+        public static final int chatto_bg_focused=0x7f02000c;
+        public static final int chatto_bg_normal=0x7f02000d;
+        public static final int contact_default=0x7f02000e;
+        public static final int details_view=0x7f02000f;
+        public static final int from=0x7f020010;
+        public static final int ic_action_discover=0x7f020011;
+        public static final int ic_action_logo=0x7f020012;
+        public static final int ic_action_on_off=0x7f020013;
+        public static final int ic_apk=0x7f020014;
+        public static final int ic_launcher=0x7f020015;
+        public static final int ic_menu_file=0x7f020016;
+        public static final int ic_music=0x7f020017;
+        public static final int ic_photo=0x7f020018;
+        public static final int ic_receive_files=0x7f020019;
+        public static final int ic_sd_rom=0x7f02001a;
+        public static final int ic_tel_rom=0x7f02001b;
+        public static final int ic_txt=0x7f02001c;
+        public static final int ic_video=0x7f02001d;
+        public static final int load_more_selected=0x7f02001e;
+        public static final int load_more_selector=0x7f02001f;
+        public static final int machine=0x7f020020;
+        public static final int msg_text_bg=0x7f020021;
+        public static final int send_btn=0x7f020022;
+        public static final int to=0x7f020023;
     }
     public static final class id {
         public static final int RelativeLayout1=0x7f090009;
-        public static final int action_settings=0x7f090028;
-        public static final int atn_direct_discover=0x7f09002a;
-        public static final int atn_direct_enable=0x7f090029;
-        public static final int atn_settings=0x7f09002b;
+        public static final int action_settings=0x7f090029;
+        public static final int atn_direct_discover=0x7f09002b;
+        public static final int atn_direct_enable=0x7f09002a;
+        public static final int atn_settings=0x7f09002c;
         public static final int btn_send=0x7f090004;
         public static final int chat_from=0x7f09000a;
         public static final int chat_layout=0x7f090000;
@@ -84,38 +104,39 @@ public final class R {
         public static final int chat_time_tv=0x7f090008;
         public static final int chatting_content_size=0x7f09000b;
         public static final int chatting_state_iv=0x7f09000c;
-        public static final int chatto_image=0x7f09000d;
-        public static final int device_details=0x7f090027;
-        public static final int device_name=0x7f090026;
-        public static final int file_avaster=0x7f09001d;
+        public static final int chatto_image=0x7f09000e;
+        public static final int d=0x7f09000d;
+        public static final int device_details=0x7f090028;
+        public static final int device_name=0x7f090027;
+        public static final int file_avaster=0x7f09001e;
         public static final int file_imgview=0x7f090003;
-        public static final int file_name=0x7f09001e;
-        public static final int file_receive_time=0x7f090020;
-        public static final int file_unit_img=0x7f09000e;
-        public static final int file_unit_text=0x7f09000f;
+        public static final int file_name=0x7f09001f;
+        public static final int file_receive_time=0x7f090021;
+        public static final int file_unit_img=0x7f09000f;
+        public static final int file_unit_text=0x7f090010;
         public static final int file_units=0x7f090006;
-        public static final int group_ip=0x7f090015;
-        public static final int group_owner=0x7f090014;
-        public static final int head_arrowImageView=0x7f090019;
-        public static final int head_contentLayout=0x7f090018;
-        public static final int head_lastUpdatedTextView=0x7f09001c;
-        public static final int head_progressBar=0x7f09001a;
-        public static final int head_tipsTextView=0x7f09001b;
-        public static final int icon=0x7f090025;
-        public static final int image_thumbnail=0x7f090024;
-        public static final int listview=0x7f090010;
-        public static final int ll=0x7f09001f;
-        public static final int load_more_tv=0x7f090022;
-        public static final int load_more_view=0x7f090021;
-        public static final int loading_layout=0x7f090023;
+        public static final int group_ip=0x7f090016;
+        public static final int group_owner=0x7f090015;
+        public static final int head_arrowImageView=0x7f09001a;
+        public static final int head_contentLayout=0x7f090019;
+        public static final int head_lastUpdatedTextView=0x7f09001d;
+        public static final int head_progressBar=0x7f09001b;
+        public static final int head_tipsTextView=0x7f09001c;
+        public static final int icon=0x7f090026;
+        public static final int image_thumbnail=0x7f090025;
+        public static final int listview=0x7f090011;
+        public static final int ll=0x7f090020;
+        public static final int load_more_tv=0x7f090023;
+        public static final int load_more_view=0x7f090022;
+        public static final int loading_layout=0x7f090024;
         public static final int msg_send_layout=0x7f090002;
         public static final int msg_text=0x7f090005;
-        public static final int my_address=0x7f090012;
-        public static final int my_info=0x7f090013;
-        public static final int my_name=0x7f090011;
+        public static final int my_address=0x7f090013;
+        public static final int my_info=0x7f090014;
+        public static final int my_name=0x7f090012;
         public static final int pager=0x7f090007;
-        public static final int status_bar=0x7f090016;
-        public static final int status_text=0x7f090017;
+        public static final int status_bar=0x7f090017;
+        public static final int status_text=0x7f090018;
     }
     public static final class layout {
         public static final int activity_chat=0x7f030000;
@@ -188,4 +209,52 @@ public final class R {
         public static final int ChatUISplit=0x7f070002;
         public static final int ChatUIText=0x7f070003;
     }
+    public static final class styleable {
+        /** Attributes that can be used with a CircleImageView.
+           <p>Includes the following attributes:</p>
+           <table>
+           <colgroup align="left" />
+           <colgroup align="left" />
+           <tr><th>Attribute</th><th>Description</th></tr>
+           <tr><td><code>{@link #CircleImageView_border_color com.michelle.share:border_color}</code></td><td></td></tr>
+           <tr><td><code>{@link #CircleImageView_border_width com.michelle.share:border_width}</code></td><td></td></tr>
+           </table>
+           @see #CircleImageView_border_color
+           @see #CircleImageView_border_width
+         */
+        public static final int[] CircleImageView = {
+            0x7f010000, 0x7f010001
+        };
+        /**
+          <p>This symbol is the offset where the {@link com.michelle.share.R.attr#border_color}
+          attribute's value can be found in the {@link #CircleImageView} array.
+
+
+          <p>Must be a color value, in the form of "<code>#<i>rgb</i></code>", "<code>#<i>argb</i></code>",
+"<code>#<i>rrggbb</i></code>", or "<code>#<i>aarrggbb</i></code>".
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+          @attr name com.michelle.share:border_color
+        */
+        public static final int CircleImageView_border_color = 1;
+        /**
+          <p>This symbol is the offset where the {@link com.michelle.share.R.attr#border_width}
+          attribute's value can be found in the {@link #CircleImageView} array.
+
+
+          <p>Must be a dimension value, which is a floating point number appended with a unit such as "<code>14.5sp</code>".
+Available units are: px (pixels), dp (density-independent pixels), sp (scaled pixels based on preferred font size),
+in (inches), mm (millimeters).
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+          @attr name com.michelle.share:border_width
+        */
+        public static final int CircleImageView_border_width = 0;
+    };
 }

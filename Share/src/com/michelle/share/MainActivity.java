@@ -1,8 +1,10 @@
 package com.michelle.share;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Vector;
 
 import com.michelle.share.FriendsFragment.DeviceActionListener;
 import com.michelle.share.UserInfoFragment.UserInfoFragListener;
@@ -10,6 +12,7 @@ import com.michelle.share.socket.ShareChatService;
 import com.michelle.share.socket.ShareChatService.MyBinder;
 
 import android.app.ActionBar;
+import android.app.Activity;
 import android.app.FragmentTransaction;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
@@ -41,11 +44,14 @@ import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.TabHost;
+import android.widget.TabHost.TabContentFactory;
 import android.widget.Toast;
 
 public class MainActivity extends FragmentActivity implements
-		ActionBar.TabListener, ChannelListener, DeviceActionListener,
-		ConnectionInfoListener, UserInfoFragListener {
+		TabHost.OnTabChangeListener, ViewPager.OnPageChangeListener, ChannelListener,
+		DeviceActionListener, ConnectionInfoListener, UserInfoFragListener {
 
 	public static final String TAG = "Share App";
 
@@ -69,6 +75,8 @@ public class MainActivity extends FragmentActivity implements
 	 * The {@link ViewPager} that will host the section contents.
 	 */
 	ViewPager mViewPager;
+	private TabHost mTabHost;
+	private HashMap<String, TabInfo> mapTabInfo = new HashMap<String, TabInfo>();
 
 	private WifiP2pManager manager;
 	private boolean isWifiP2pEnabled = false;
@@ -85,6 +93,46 @@ public class MainActivity extends FragmentActivity implements
 	private ProgressDialog progressDialog = null;
 
 	private MyBinder myBinder = null;
+	
+	/**
+     * 
+     * @author mwho Maintains extrinsic info of a tab's construct
+     */
+    private class TabInfo {
+        private String tag;
+        private Class<?> clazz;
+        private Bundle args;
+        private Fragment fragment;
+
+        TabInfo(String tag, Class<?> clazz, Bundle args) {
+            this.tag = tag;
+            this.clazz = clazz;
+            this.args = args;
+        }
+
+    }
+
+	class TabFactory implements TabContentFactory {
+		 
+        private final Context mContext;
+ 
+        /**
+         * @param context
+         */
+        public TabFactory(Context context) {
+            mContext = context;
+        }
+ 
+        /** (non-Javadoc)
+         * @see android.widget.TabHost.TabContentFactory#createTabContent(java.lang.String)
+         */
+        public View createTabContent(String tag) {
+            View v = new View(mContext);
+            v.setMinimumWidth(0);
+            v.setMinimumHeight(0);
+            return v;
+        }
+    }
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -114,12 +162,40 @@ public class MainActivity extends FragmentActivity implements
 				.addAction(WifiP2pManager.WIFI_P2P_THIS_DEVICE_CHANGED_ACTION);
 
 		
+		
 		// Set up the action bar.
 		final ActionBar actionBar = getActionBar();
-		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
+		//actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
 
 		// Create the adapter that will return a fragment for each of the three
 		// primary sections of the app.
+		mTabHost = (TabHost) findViewById(android.R.id.tabhost);
+		mTabHost.setup();
+		
+		TabInfo tabInfo = null;
+		AddTab(this, this.mTabHost,
+				this.mTabHost.newTabSpec("Tab1").setIndicator(getString(R.string.title_section1)), 
+				( tabInfo = new TabInfo("Tab1", FriendsFragment.class, savedInstanceState)));
+		this.mapTabInfo.put(tabInfo.tag, tabInfo);
+		AddTab(this, this.mTabHost, 
+				this.mTabHost.newTabSpec("Tab2").setIndicator(getString(R.string.title_section2)), 
+				( tabInfo = new TabInfo("Tab2", HistoryFilesFragment.class, savedInstanceState)));
+		this.mapTabInfo.put(tabInfo.tag, tabInfo);
+		AddTab(this, this.mTabHost, 
+				this.mTabHost.newTabSpec("Tab3").setIndicator(getString(R.string.title_section3)), 
+				( tabInfo = new TabInfo("Tab3", UserInfoFragment.class, savedInstanceState)));
+		this.mapTabInfo.put(tabInfo.tag, tabInfo);
+		
+		mTabHost.setOnTabChangedListener(this);
+		if (savedInstanceState != null) {
+			mTabHost.setCurrentTabByTag(savedInstanceState.getString("tab")); //set the tab as per the saved state
+		}
+
+//		List<Fragment> fragments = new Vector<Fragment>();
+//        fragments.add(Fragment.instantiate(this, FriendsFragment.class.getName()));
+//        fragments.add(Fragment.instantiate(this, HistoryFilesFragment.class.getName()));
+//        fragments.add(Fragment.instantiate(this, UserInfoFragment.class.getName()));
+//        this.mSectionsPagerAdapter = new PagerAdapter(super.getSupportFragmentManager(), fragments);
 		mSectionsPagerAdapter = new SectionsPagerAdapter(
 				getSupportFragmentManager());
 
@@ -130,24 +206,18 @@ public class MainActivity extends FragmentActivity implements
 		// When swiping between different sections, select the corresponding
 		// tab. We can also use ActionBar.Tab#select() to do this if we have
 		// a reference to the Tab.
-		mViewPager
-				.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
-					@Override
-					public void onPageSelected(int position) {
-						actionBar.setSelectedNavigationItem(position);
-					}
-				});
+		mViewPager.setOnPageChangeListener(this);
 
-		// For each of the sections in the app, add a tab to the action bar.
-		for (int i = 0; i < mSectionsPagerAdapter.getCount(); i++) {
-			// Create a tab with text corresponding to the page title defined by
-			// the adapter. Also specify this Activity object, which implements
-			// the TabListener interface, as the callback (listener) for when
-			// this tab is selected.
-			actionBar.addTab(actionBar.newTab()
-					.setText(mSectionsPagerAdapter.getPageTitle(i))
-					.setTabListener(this));
-		}
+//		// For each of the sections in the app, add a tab to the action bar.
+//		for (int i = 0; i < mSectionsPagerAdapter.getCount(); i++) {
+//			// Create a tab with text corresponding to the page title defined by
+//			// the adapter. Also specify this Activity object, which implements
+//			// the TabListener interface, as the callback (listener) for when
+//			// this tab is selected.
+//			actionBar.addTab(actionBar.newTab()
+//					.setText(mSectionsPagerAdapter.getPageTitle(i))
+//					.setTabListener(this));
+//		}
 		
 		manager = (WifiP2pManager) getSystemService(Context.WIFI_P2P_SERVICE);
 		channel = manager.initialize(this, getMainLooper(), null);
@@ -156,29 +226,58 @@ public class MainActivity extends FragmentActivity implements
 		((ShareApplication) getApplication()).mainActivity = this;
 	}
 
+	private static void AddTab(MainActivity activity,
+        TabHost tabHost, TabHost.TabSpec tabSpec, TabInfo tabInfo) {
+        // Attach a Tab view factory to the spec
+        tabSpec.setContent(activity.new TabFactory(activity));
+        tabHost.addTab(tabSpec);
+    }
+	
+	/** (non-Javadoc)
+	 * @see android.support.v4.app.FragmentActivity#onSaveInstanceState(android.os.Bundle)
+	 */
+	protected void onSaveInstanceState(Bundle outState) {	 
+		outState.putString("tab", mTabHost.getCurrentTabTag()); //save the tab selected
+		super.onSaveInstanceState(outState);
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see android.app.Activity#onRestoreInstanceState(android.os.Bundle)
+	 */
+	@Override
+	protected void onRestoreInstanceState(Bundle savedInstanceState) {
+		if (savedInstanceState != null) {
+			this.mTabHost.setCurrentTabByTag(savedInstanceState
+					.getString("tab")); // set the tab as per the saved state
+		}
+		super.onRestoreInstanceState(savedInstanceState);
+	}
+	 
 	private void startRegistrationAndDiscovery() {
 		Map<String, String> record = new HashMap<String, String>();
-        record.put(TXTRECORD_PROP_AVAILABLE, "visible");
-
-        WifiP2pDnsSdServiceInfo service = WifiP2pDnsSdServiceInfo.newInstance(
-                SERVICE_INSTANCE, SERVICE_REG_TYPE, record);
-        manager.addLocalService(channel, service, new ActionListener() {
-
+	    record.put(TXTRECORD_PROP_AVAILABLE, "visible");
+	
+	    WifiP2pDnsSdServiceInfo service = WifiP2pDnsSdServiceInfo.newInstance(
+	            SERVICE_INSTANCE, SERVICE_REG_TYPE, record);
+	    manager.addLocalService(channel, service, new ActionListener() {
+	
 			@Override
 			public void onSuccess() {
 				// TODO Auto-generated method stub
 				
 			}
-
+	
 			@Override
 			public void onFailure(int reason) {
 				// TODO Auto-generated method stub
 				
 			}
-        });
-
-        discoverService();
-
+	    });
+	
+	    discoverService();
+	
 	}
 
 	private void discoverService() {
@@ -362,24 +461,24 @@ public class MainActivity extends FragmentActivity implements
 			return super.onOptionsItemSelected(item);
 		}
 	}
-
-	@Override
-	public void onTabSelected(ActionBar.Tab tab,
-			FragmentTransaction fragmentTransaction) {
-		// When the given tab is selected, switch to the corresponding page in
-		// the ViewPager.
-		mViewPager.setCurrentItem(tab.getPosition());
-	}
-
-	@Override
-	public void onTabUnselected(ActionBar.Tab tab,
-			FragmentTransaction fragmentTransaction) {
-	}
-
-	@Override
-	public void onTabReselected(ActionBar.Tab tab,
-			FragmentTransaction fragmentTransaction) {
-	}
+//
+//	@Override
+//	public void onTabSelected(ActionBar.Tab tab,
+//		FragmentTransaction fragmentTransaction) {
+//		// When the given tab is selected, switch to the corresponding page in
+//		// the ViewPager.
+//		mViewPager.setCurrentItem(tab.getPosition());
+//	}
+//
+//	@Override
+//	public void onTabUnselected(ActionBar.Tab tab,
+//		FragmentTransaction fragmentTransaction) {
+//	}
+//
+//	@Override
+//	public void onTabReselected(ActionBar.Tab tab,
+//		FragmentTransaction fragmentTransaction) {
+//	}
 
 	/**
 	 * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
@@ -631,5 +730,28 @@ public class MainActivity extends FragmentActivity implements
 //		
 //		// close WiFi p2p connection
 //		this.disconnect();
+	}
+
+	@Override
+	public void onPageScrollStateChanged(int arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onPageScrolled(int arg0, float arg1, int arg2) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onPageSelected(int position) {
+		this.mTabHost.setCurrentTab(position);
+	}
+
+	@Override
+	public void onTabChanged(String tabId) {
+		int pos = this.mTabHost.getCurrentTab();
+		this.mViewPager.setCurrentItem(pos);
 	}
 }
