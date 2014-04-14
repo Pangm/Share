@@ -1,26 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
-    android:layout_height="?android:attr/listPreferredItemHeight"
-    android:background="?android:attr/activatedBackgroundIndicator"
-    android:padding="6dip">
-    <ImageView
-        android:id="@+id/icon"
-        android:layout_width="wrap_content"
-        android:layout_height="fill_parent"
-        android:layout_marginRight="2dip"
-        android:src="@drawable/machine" />
+    android:layout_height="wrap_content"
+    android:background="@drawable/chatfrom_bg"
+    android:orientation="horizontal"
+    android:padding="6dip" >
+
+    <FrameLayout
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:background="@drawable/friendavatar_bg" >
+
+        <com.michelle.share.widget.CircleImageView
+            android:id="@+id/circleImageView1"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_gravity="center"
+            android:src="@drawable/avatar7" />
+
+    </FrameLayout>
+        
     <LinearLayout
-        android:orientation="vertical"
         android:layout_width="0dip"
+        android:layout_height="fill_parent"
+        android:layout_marginLeft="15dp"
         android:layout_weight="1"
-        android:layout_height="fill_parent">
+        android:orientation="vertical" >
 
         <TextView
             android:id="@+id/device_name"
             android:layout_width="match_parent"
             android:layout_height="0dp"
+            android:layout_marginTop="5dp"
             android:layout_weight="1"
             android:text="@string/empty" />
         
