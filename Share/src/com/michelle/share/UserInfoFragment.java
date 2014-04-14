@@ -45,8 +45,8 @@ public class UserInfoFragment extends Fragment {
         view.setText(R.string.empty);
         view = (TextView) mContentView.findViewById(R.id.group_owner);
         view.setText(R.string.empty);
-        view = (TextView) mContentView.findViewById(R.id.status_text);
-        view.setText(R.string.empty);
+//        view = (TextView) mContentView.findViewById(R.id.status_text);
+//        view.setText(R.string.empty);
     }
 	
     /**
@@ -59,6 +59,8 @@ public class UserInfoFragment extends Fragment {
 		view.setText(device.deviceName);
         view = (TextView) mContentView.findViewById(R.id.my_address);
         view.setText(device.deviceAddress);
+        view = (TextView) mContentView.findViewById(R.id.group_owner);
+        view.setText(device.isGroupOwner()? "WiFi P2P 拥有者" : "WiFi P2P 加入者");
         view = (TextView) mContentView.findViewById(R.id.my_info);
         view.setText(device.toString());
 	}

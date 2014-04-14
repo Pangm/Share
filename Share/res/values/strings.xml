@@ -20,5 +20,6 @@
     <string name="hello_world">Hello world!</string>
     <string name="send_btn_content">Send</string>
     <string name="title_activity_thumbnail">ThumbnailActivity</string>
+    <string name="content_myname">michelle</string>
 
 </resources>

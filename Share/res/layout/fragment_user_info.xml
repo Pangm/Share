@@ -1,69 +1,152 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-   	xmlns:tools="http://schemas.android.com/tools"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/LinearLayout1"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context=".MainActivity$UserInfoFragment">
-<!--         class="com.michelle.UserInfoFragment" -->
-<!--     android:id="@+id/fragment_user_info" -->
-    
+    tools:context=".MainActivity$UserInfoFragment" >
+
+    <!-- class="com.michelle.UserInfoFragment" -->
+    <!-- android:id="@+id/fragment_user_info" -->
+
+    <FrameLayout
+        android:layout_width="110dip"
+        android:layout_height="110dip"
+        android:layout_gravity="center_horizontal"
+        android:background="@drawable/avatar_bg" >
+
+        <com.michelle.share.widget.CircleImageView
+            android:id="@+id/circleImageView1"
+            android:layout_width="100dip"
+            android:layout_height="100dip"
+            android:layout_gravity="center"
+            android:src="@drawable/avatar" />
+    </FrameLayout>
+
+    <TextView
+        android:id="@+id/my_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="20dp"
+        android:layout_marginTop="10dp"
+        android:text="@string/content_myname" />
+
     <LinearLayout
-        android:orientation="vertical"
+        android:id="@+id/LinearLayout2"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:gravity="center"
+        android:orientation="vertical" >
 
         <TextView
-            android:id="@+id/my_name"
+            android:id="@+id/textView1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <RelativeLayout
+            android:id="@+id/RelativeLayout1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textColor="@color/black"
-            android:text="@string/empty" />
+            android:layout_gravity="left" >
+
+            <TextView
+                android:id="@+id/my_address_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentTop="true"
+                android:layout_marginLeft="66dp"
+                android:text="本机 IP: " />
+
+            <TextView
+                android:id="@+id/my_address"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_marginLeft="28dp"
+                android:layout_toRightOf="@+id/my_address_title"
+                android:text="8e:3a:e3:48:87:a0" />
+
+        </RelativeLayout>
 
         <TextView
-            android:id="@+id/my_address"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textColor="@color/black" />
-
-        <TextView
-            android:id="@+id/my_info"
-            android:layout_width="match_parent"
+            android:id="@+id/textView3"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
         <TextView
-            android:id="@+id/group_owner"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textColor="@color/black" />
-
-        <TextView
-            android:id="@+id/group_ip"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textColor="@color/black" />
-
-    </LinearLayout>
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:id="@+id/status_bar"
-        android:orientation="vertical"
-        android:layout_gravity="bottom"
-        android:layout_height="37dp"
-        android:layout_marginBottom="3dp">
-
-        <TextView
-            android:id="@+id/status_text"
+            android:id="@+id/my_info"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_gravity="center"
-            android:layout_margin="5dp"
-            android:textColor="@color/black" >
+            android:layout_height="wrap_content"
+            android:layout_gravity="left"
+            android:text="my_info"
+            android:visibility="gone" />
 
-        </TextView>
+        <RelativeLayout
+            android:id="@+id/RelativeLayout1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal" >
+
+            <TextView
+                android:id="@+id/group_owner_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentTop="true"
+                android:layout_marginLeft="66dp"
+                android:text="类型 : " />
+
+            <TextView
+                android:id="@+id/group_owner"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_marginLeft="38dp"
+                android:layout_toRightOf="@+id/group_owner_title"
+                android:text="groupowner" />
+
+        </RelativeLayout>
+
+        <TextView
+            android:id="@+id/textView4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <RelativeLayout
+            android:id="@+id/RelativeLayout1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal" >
+
+            <TextView
+                android:id="@+id/group_ip_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentTop="true"
+                android:layout_marginLeft="66dp"
+                android:text="主机 IP : " />
+
+            <TextView
+                android:id="@+id/group_ip"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_marginLeft="26dp"
+                android:layout_toRightOf="@+id/group_ip_title"
+                android:text="196.128.70.0" />
+        </RelativeLayout>
+
+        <TextView
+            android:id="@+id/TextView01"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
     </LinearLayout>
-</FrameLayout>
+
+</LinearLayout>

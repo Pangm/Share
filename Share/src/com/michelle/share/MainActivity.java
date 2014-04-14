@@ -42,11 +42,14 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TabHost;
 import android.widget.TabHost.TabContentFactory;
+import android.widget.TabWidget;
+import android.widget.TextView;
 import android.widget.Toast;
 
 public class MainActivity extends FragmentActivity implements
@@ -165,24 +168,28 @@ public class MainActivity extends FragmentActivity implements
 		
 		// Set up the action bar.
 		final ActionBar actionBar = getActionBar();
+		
+		actionBar.setBackgroundDrawable(getResources().getDrawable(R.drawable.actionbar_bg));
 		//actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
 
 		// Create the adapter that will return a fragment for each of the three
 		// primary sections of the app.
-		mTabHost = (TabHost) findViewById(android.R.id.tabhost);
+		mTabHost = (TabHost) findViewById(R.id.tabhost);
 		mTabHost.setup();
+//		View view = LayoutInflater.from(this).inflate(R.layout.tab_layout, null);
 		
 		TabInfo tabInfo = null;
 		AddTab(this, this.mTabHost,
-				this.mTabHost.newTabSpec("Tab1").setIndicator(getString(R.string.title_section1)), 
+				this.mTabHost.newTabSpec("Tab1").setIndicator(createTabView(getString(R.string.title_section1))), 
 				( tabInfo = new TabInfo("Tab1", FriendsFragment.class, savedInstanceState)));
 		this.mapTabInfo.put(tabInfo.tag, tabInfo);
 		AddTab(this, this.mTabHost, 
-				this.mTabHost.newTabSpec("Tab2").setIndicator(getString(R.string.title_section2)), 
+				this.mTabHost.newTabSpec("Tab2").setIndicator(createTabView(getString(R.string.title_section2))), 
 				( tabInfo = new TabInfo("Tab2", HistoryFilesFragment.class, savedInstanceState)));
 		this.mapTabInfo.put(tabInfo.tag, tabInfo);
+	
 		AddTab(this, this.mTabHost, 
-				this.mTabHost.newTabSpec("Tab3").setIndicator(getString(R.string.title_section3)), 
+				this.mTabHost.newTabSpec("Tab3").setIndicator(createTabView(getString(R.string.title_section3))), 
 				( tabInfo = new TabInfo("Tab3", UserInfoFragment.class, savedInstanceState)));
 		this.mapTabInfo.put(tabInfo.tag, tabInfo);
 		
@@ -224,6 +231,14 @@ public class MainActivity extends FragmentActivity implements
 		startRegistrationAndDiscovery();
 		
 		((ShareApplication) getApplication()).mainActivity = this;
+	}
+	
+	private View createTabView(String text ){
+		View view = LayoutInflater.from(this).inflate(R.layout.tab_layout, null);
+		TextView tab_tv = (TextView) view.findViewById(R.id.title);
+		tab_tv.setText(text);
+		return view;
+		
 	}
 
 	private static void AddTab(MainActivity activity,
