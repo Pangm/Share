@@ -98,7 +98,8 @@ containing a value of this type.
         public static final int tab_select=0x7f020029;
         public static final int tabhost_normal=0x7f02002a;
         public static final int text_bg=0x7f02002b;
-        public static final int to=0x7f02002c;
+        public static final int time_bg=0x7f02002c;
+        public static final int to=0x7f02002d;
     }
     public static final class id {
         public static final int LinearLayout1=0x7f090014;
