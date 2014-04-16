@@ -1,6 +1,7 @@
 package com.michelle.share.socket;
 
 import java.io.IOException;
+import java.util.List;
 
 import com.michelle.share.ChatMessage;
 import com.michelle.share.Contact;
@@ -31,11 +32,13 @@ public class ShareChatService extends Service implements Handler.Callback,
 	public static final int FILE_NAME = 0x400 + 5;
 	public static final int CONTACT_TRANSFER_HANDLE = 0x400 + 6;
 	public static final int CONTACT_READ = 0x400 + 7;
+	public static final int FILE_READ_PART = 0x400 + 8;
 	
 	static final int SERVER_PORT = 4545;
 	static final int SERVER_FILE_PORT = 4546;
 	static final int SERVER_CONTACT_PORT = 4547;
 	private static final String TAG = "Share ChatSevice";
+	
 	
 	
 	
@@ -87,6 +90,7 @@ public class ShareChatService extends Service implements Handler.Callback,
 			time.setToNow();
 			chatMsg = new ChatMessage(ChatMessage.MESSAGE_FROM,
 					msg.obj, time);
+			chatMsg.setProgressValue(0);
 			((ShareApplication) getApplication()).getMessages().add(chatMsg);
 			ImageFileService imageFileService = new ImageFileService(this);
 			ImageFile imageFile = (ImageFile) msg.obj;
@@ -96,6 +100,27 @@ public class ShareChatService extends Service implements Handler.Callback,
 			intent = new Intent();
 			intent.setAction("android.intent.action.MSG_RECEIVE");// action与接收器相同
 			sendBroadcast(intent);
+			break;
+		case FILE_READ_PART:
+			int receivedCount = msg.arg1;
+			int fileCount = msg.arg2;
+			int progressValue = (int) (receivedCount * 100f / fileCount);
+			String fileName = (String) msg.obj;
+			List<ChatMessage> messages = ((ShareApplication) getApplication()).getMessages();
+
+			for(ChatMessage chatMsgTmp : messages) {
+				if (chatMsgTmp.getContent() instanceof ImageFile
+						&& ((ImageFile) chatMsgTmp.getContent()).getName().equals(fileName)) {
+					chatMsg = chatMsgTmp;
+				}
+			}
+			chatMsg.setProgressValue(progressValue);
+			
+			intent = new Intent();
+			intent.setAction("android.intent.action.MSG_RECEIVE_PART");// action与接收器相同
+			sendBroadcast(intent);
+			
+			
 			break;
 		case CONTACT_READ:
 			Contact Contact = (Contact) msg.obj;

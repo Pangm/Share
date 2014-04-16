@@ -19,6 +19,7 @@ import com.michelle.share.ShareApplication;
 
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Environment;
 import android.os.Handler;
@@ -69,45 +70,24 @@ public class FileTransferManager implements Runnable {
 					// Read from the InputStream
 					Log.d(FileTransferManager.TAG, "Server: connection done");
 					String fileName = dataInputStream.readUTF();
-//					try {
-//						if (fileName.equals("contact")) {
-//							 Object obj = ois.readObject();  
-//							 Contact contact = (Contact) obj;
-//						}
-//					} catch (ClassNotFoundException e) {
-//						// TODO Auto-generated catch block
-//						e.printStackTrace();
-//					}
+					float fileSize = dataInputStream.readFloat();
 					
+					// create a file to prepare for writing the received file content. 
 					final File f = new File(
 							Environment.getExternalStorageDirectory() + "/"
 									+ "MichelleShare" + "/"
 									+ fileName + ".jpg");
-//									+ System.currentTimeMillis() + ".jpg");
 
 					File dirs = new File(f.getParent());
+					
 					if (!dirs.exists())
 						dirs.mkdirs();
 					f.createNewFile();
 
 					Log.d(FileTransferManager.TAG,
 							"server: copying files " + f.toString());
-					//copyFile(iStream, new FileOutputStream(f));
-					FileOutputStream out = new FileOutputStream(f);
-					int len;
-					try {
-						int byteCount = -1;
-						byte buf[] = new byte[1024 * 60];
-						while ((byteCount = dataInputStream.readInt()) != 0) {
-							dataInputStream.readFully(buf, 0, byteCount);
-							out.write(buf, 0, byteCount);
-						}
-						out.close();
-					} catch (IOException e) {
-						Log.d(FileTransferManager.TAG, e.toString());
-					}
-					// Send the obtained bytes to the UI Activity
-					float size = f.length() / (1024);
+					
+					float size = fileSize / (1024);
 					String name = f.getName();
 					String path = f.getAbsolutePath();
 					Time time = new Time();
@@ -115,10 +95,32 @@ public class FileTransferManager implements Runnable {
 					
 					ImageFile imageFile = new ImageFile(name, size, path, time);
 					
-//					handler.obtainMessage(ShareChatService.FILE_READ, 0, -1,
-//							f.getAbsolutePath()).sendToTarget();
+					// Send the obtained file to the UI Activity
 					handler.obtainMessage(ShareChatService.FILE_READ, 0, -1,
 							imageFile).sendToTarget();
+					
+					// read the file content and write to local file
+					FileOutputStream out = new FileOutputStream(f);
+					int len;
+					try {
+						int byteCount = -1;
+						int receivedCount = 0;
+						byte buf[] = new byte[1024 * 60];
+						while ((byteCount = dataInputStream.readInt()) != 0) {
+							dataInputStream.readFully(buf, 0, byteCount);
+							out.write(buf, 0, byteCount);
+							receivedCount += byteCount;
+							// Send the obtained file to the UI Activity
+							handler.obtainMessage(ShareChatService.FILE_READ_PART, receivedCount,
+									(int) fileSize,	fileName).sendToTarget();
+						}
+						out.close();
+					} catch (IOException e) {
+						Log.d(FileTransferManager.TAG, e.toString());
+					}
+					
+					
+					
 				} catch (IOException e) {
 					Log.e(TAG, "disconnected", e);
 				} 

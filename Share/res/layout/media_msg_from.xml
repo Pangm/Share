@@ -9,7 +9,6 @@
 
     <TextView
         android:id="@+id/chat_time_tv"
-        style="@style/ChatUISplit"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
@@ -88,6 +87,13 @@
                     android:layout_height="wrap_content"
                     android:paddingTop="5dp"
                     android:text="2.2M" />
+
+                <ProgressBar
+                    android:id="@+id/progress"
+                    style="?android:attr/progressBarStyleHorizontal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
             </LinearLayout>
         </LinearLayout>
     </RelativeLayout>

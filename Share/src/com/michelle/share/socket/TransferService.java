@@ -53,7 +53,6 @@ public class TransferService extends IntentService {
             
             try {
             	OutputStream oStream = ((ShareApplication) getApplication()).getoStream();
-//            	OutputStream oStream = ((ShareApplication) getApplication()).getTransferSocket().getOutputStream();
             	DataOutputStream dataOutStream = new DataOutputStream(oStream);
             	String fileName = ("image" + System.currentTimeMillis());
             	Float fileSize = 0f;
@@ -66,6 +65,8 @@ public class TransferService extends IntentService {
                 try {
                 	iStream = cr.openInputStream(Uri.parse(fileUri));
                 	fileSize = (float) (iStream.available() / 1024);
+                	dataOutStream.writeFloat(fileSize);
+                	dataOutStream.flush();
                 } catch (FileNotFoundException e) {
                     Log.d(ChatActivity.TAG, e.toString());
                 } catch (IOException e) {
@@ -75,6 +76,7 @@ public class TransferService extends IntentService {
                 time.setToNow();
                 ImageFile imageFile = new ImageFile(fileName, fileSize, filePath, time);
                 
+                // notify the UI that we are goting to send a file.
                 List<ChatMessage> messages = ((ShareApplication) getApplication()).getMessages();
                 messages.add(new ChatMessage(ChatMessage.MESSAGE_TO, imageFile, imageFile.getTime()));
                 
@@ -82,6 +84,7 @@ public class TransferService extends IntentService {
     			intent.setAction("android.intent.action.MSG_RECEIVE");// action与接收器相同
     			sendBroadcast(intent);
     			
+    			// write the file content
                 byte buf[] = new byte[1024 * 60];
         		int byteCount = 0;
         		try {

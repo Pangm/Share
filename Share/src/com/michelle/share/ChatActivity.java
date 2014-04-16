@@ -127,6 +127,7 @@ public class ChatActivity extends Activity implements IOnRefreshListener, IOnLoa
         receiver = new MyReceiver();
 		IntentFilter filter = new IntentFilter();
 		filter.addAction("android.intent.action.MSG_RECEIVE");
+		filter.addAction("android.intent.action.MSG_RECEIVE_PART");
 		registerReceiver(receiver,filter);
         
 		// set chatList adapter
@@ -491,9 +492,13 @@ public class ChatActivity extends Activity implements IOnRefreshListener, IOnLoa
 		@Override
 		public void onReceive(Context context, Intent intent) {
 			System.out.println("OnReceiver");
-			// notify receive a message. 
-			chatData.add(messages.get(messages.size()-1));
-			chatAdapter.notifyDataSetChanged(); 
+			if (intent.getAction().equals("android.intent.action.MSG_RECEIVE")) {
+				// notify receive a message. 
+				chatData.add(messages.get(messages.size()-1));
+				chatAdapter.notifyDataSetChanged(); 
+			} else if (intent.getAction().equals("android.intent.action.MSG_RECEIVE_PART")){
+				chatAdapter.notifyDataSetChanged(); 
+			}
 		}
 		public MyReceiver(){
 			System.out.println("MyReceiver");

@@ -9,12 +9,24 @@ public class ChatMessage {
 	private int direction;
 	private Object content;
 	private Time time;
+	private int progressValue;
 
 	public ChatMessage(int direction, Object content, Time time) {
 		super();
 		this.direction = direction;
 		this.content = content;
 		this.time = time;
+		this.progressValue = 100;
+	}
+
+	public int getProgressValue() {
+		return progressValue;
+	}
+
+	public void setProgressValue(int progressValue) {
+		if (progressValue <= 100 || progressValue >= 0) {
+			this.progressValue = progressValue;
+		}
 	}
 
 	/**
