@@ -14,12 +14,12 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:background="@drawable/time_bg"
-        android:paddingTop="4dp"
         android:paddingBottom="4dp"
         android:paddingLeft="10dp"
         android:paddingRight="10dp"
-        android:textColor="@color/white"
+        android:paddingTop="4dp"
         android:text="2014-06-12 12:13"
+        android:textColor="@color/white"
         android:visibility="visible" />
 
     <RelativeLayout
@@ -28,29 +28,32 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal" >
 
-        <ImageView
-            android:id="@+id/user_avatar"
-            android:layout_width="40dip"
-            android:layout_height="40dip"
+        <FrameLayout
+            android:layout_width="60dp"
+            android:layout_height="60dp"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
-            android:layout_marginRight="16dp"
-            android:adjustViewBounds="true"
-            android:scaleType="fitXY"
-            android:src="@drawable/avatar_to"
-            android:visibility="visible" />
+            android:background="@drawable/avatar_from" >
+
+            <com.michelle.share.widget.CircleImageView
+                android:id="@+id/user_avatar"
+                android:layout_width="45dip"
+                android:layout_height="45dip"
+                android:layout_gravity="center"
+                android:src="@drawable/avatar"
+                android:visibility="visible" />
+        </FrameLayout>
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:paddingLeft="10dp"
-            android:paddingBottom="5dp"
-            android:paddingRight="5dp"
-            android:paddingTop="5dp"
-            android:layout_centerHorizontal="true"
+            android:layout_centerInParent="true"
             android:background="@drawable/chatfrom_bg"
-            android:orientation="horizontal" >
+            android:orientation="horizontal"
+            android:paddingBottom="5dp"
+            android:paddingLeft="10dp"
+            android:paddingRight="5dp"
+            android:paddingTop="5dp" >
 
             <ImageView
                 android:id="@+id/file_avastar"
@@ -86,7 +89,6 @@
                     android:text="2.2M" />
             </LinearLayout>
         </LinearLayout>
-
     </RelativeLayout>
 
 </LinearLayout>
