@@ -8,12 +8,12 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     android:orientation="vertical" >
     
-	<ListView    
-	    android:layout_width="fill_parent"   
-	    android:layout_height="wrap_content" 
+	<ListView
+	    android:id="@+id/listview"
+	    android:layout_width="fill_parent"
+	    android:layout_height="match_parent"
 	    android:divider="@null"
-	    android:scrollingCache="true"
 	    android:dividerHeight="2dp"
-	    android:id="@+id/listview"  
-    />
+	    android:scrollingCache="true" />
+
 </LinearLayout>

@@ -34,7 +34,7 @@
             android:background="@drawable/avatar_to" >
 
             <com.michelle.share.widget.CircleImageView
-                android:id="@+id/chat_from"
+                android:id="@+id/user_avatar"
                 android:layout_width="45dip"
                 android:layout_height="45dip"
                 android:layout_gravity="center"

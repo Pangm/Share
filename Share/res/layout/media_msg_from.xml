@@ -26,7 +26,7 @@
         android:orientation="horizontal" >
 
         <ImageView
-            android:id="@+id/chat_from"
+            android:id="@+id/user_avatar"
             android:layout_width="40dip"
             android:layout_height="40dip"
             android:scaleType="fitXY"
@@ -44,12 +44,12 @@
             android:paddingBottom="5dp"
             android:paddingRight="5dp"
             android:paddingTop="5dp"
-            android:layout_toRightOf="@+id/chat_from"
+            android:layout_toRightOf="@+id/user_avatar"
             android:background="@drawable/chatfrom_bg"
             android:orientation="horizontal" >
 
             <ImageView
-                android:id="@+id/image_thumbnail"
+                android:id="@+id/file_avastar"
                 android:layout_width="48dip"
                 android:layout_height="48dip"
                 android:layout_gravity="center"

@@ -105,12 +105,11 @@ containing a value of this type.
         public static final int LinearLayout2=0x7f090017;
         public static final int RelativeLayout1=0x7f09000a;
         public static final int TextView01=0x7f090022;
-        public static final int action_settings=0x7f090033;
-        public static final int atn_direct_discover=0x7f090035;
-        public static final int atn_direct_enable=0x7f090034;
-        public static final int atn_settings=0x7f090036;
+        public static final int action_settings=0x7f090032;
+        public static final int atn_direct_discover=0x7f090034;
+        public static final int atn_direct_enable=0x7f090033;
+        public static final int atn_settings=0x7f090035;
         public static final int btn_send=0x7f090004;
-        public static final int chat_from=0x7f09000c;
         public static final int chat_layout=0x7f090000;
         public static final int chat_list=0x7f090001;
         public static final int chat_time_tv=0x7f090009;
@@ -119,10 +118,10 @@ containing a value of this type.
         public static final int chatto_image=0x7f090010;
         public static final int circleImageView1=0x7f090015;
         public static final int d=0x7f09000f;
-        public static final int device_details=0x7f090031;
-        public static final int device_name=0x7f090030;
+        public static final int device_details=0x7f090030;
+        public static final int device_name=0x7f09002f;
         public static final int e=0x7f09000b;
-        public static final int file_avaster=0x7f090028;
+        public static final int file_avastar=0x7f090028;
         public static final int file_imgview=0x7f090003;
         public static final int file_name=0x7f090029;
         public static final int file_receive_time=0x7f09002b;
@@ -138,7 +137,6 @@ containing a value of this type.
         public static final int head_lastUpdatedTextView=0x7f090027;
         public static final int head_progressBar=0x7f090025;
         public static final int head_tipsTextView=0x7f090026;
-        public static final int image_thumbnail=0x7f09002f;
         public static final int listview=0x7f090013;
         public static final int ll=0x7f09002a;
         public static final int load_more_tv=0x7f09002d;
@@ -155,7 +153,8 @@ containing a value of this type.
         public static final int textView1=0x7f090018;
         public static final int textView3=0x7f09001b;
         public static final int textView4=0x7f09001f;
-        public static final int title=0x7f090032;
+        public static final int title=0x7f090031;
+        public static final int user_avatar=0x7f09000c;
     }
     public static final class layout {
         public static final int activity_chat=0x7f030000;
