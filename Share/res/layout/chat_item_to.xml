@@ -9,7 +9,6 @@
 
     <TextView
         android:id="@+id/chat_time_tv"
-        style="@style/ChatUISplit"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
@@ -37,12 +36,12 @@
             android:layout_toLeftOf="@+id/chatting_content_size" />
 
         <FrameLayout
-            android:id="@+id/d"
+            android:id="@+id/frameLayout1"
             android:layout_width="60dip"
             android:layout_height="60dip"
             android:layout_alignParentRight="true"
-            android:layout_alignParentTop="true"
-            android:background="@drawable/avatar_from"  >
+            android:layout_centerVertical="true"
+            android:background="@drawable/avatar_from" >
 
             <com.michelle.share.widget.CircleImageView
                 android:id="@+id/chatto_image"
@@ -50,21 +49,22 @@
                 android:layout_height="45dip"
                 android:layout_gravity="center"
                 android:src="@drawable/avatar" />
-
         </FrameLayout>
 
         <TextView
             android:id="@+id/chatting_content_size"
             style="@style/ChatUIText"
             android:layout_centerVertical="true"
-            android:layout_toLeftOf="@+id/d"
+            android:layout_marginRight="4dp"
+            android:layout_toLeftOf="@+id/frameLayout1"
             android:autoLink="web"
             android:background="@drawable/chatto_bg"
-           	android:paddingLeft="10dp"
+            android:paddingBottom="15dp"
+            android:paddingLeft="10dp"
             android:paddingRight="10dp"
             android:paddingTop="15dp"
-            android:paddingBottom="15dp"
             android:text="你好 妹子" />
+
     </RelativeLayout>
 
 </LinearLayout>

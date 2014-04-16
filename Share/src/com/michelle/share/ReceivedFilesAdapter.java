@@ -61,7 +61,7 @@ public class ReceivedFilesAdapter extends BaseAdapter {
 	            viewHolder.mFileNameTV = (TextView) convertView  
 	                    .findViewById(R.id.file_name);  
 	            viewHolder.mFileImageIV = (ImageView) convertView  
-	                    .findViewById(R.id.file_avastar);
+	                    .findViewById(R.id.file_avatar);
 	            viewHolder.mFileSizeTV = (TextView) convertView
 	            		.findViewById(R.id.chatting_content_size);
 	            viewHolder.mReceivedTimeTV = (TextView) convertView

@@ -95,7 +95,7 @@ public class ChatAdapter extends BaseAdapter {
 					userAvatar.setImageDrawable(getImgDrawable(userAvatar,R.drawable.avatar_from,R.drawable.avatar7));
 				}
 				holder.text = (TextView) convertView.findViewById(R.id.file_name);
-				holder.imageView = (ImageView) convertView.findViewById(R.id.file_avastar);
+				holder.imageView = (ImageView) convertView.findViewById(R.id.file_avatar);
 				holder.size = (TextView) convertView.findViewById(R.id.chatting_content_size);
 				holder.time = (TextView) convertView.findViewById(R.id.chat_time_tv);
 				
@@ -150,7 +150,7 @@ public class ChatAdapter extends BaseAdapter {
 					imageView_chatto.setImageDrawable(getImgDrawable(imageView_chatto,R.drawable.avatar_from,R.drawable.avatar7));
 				}
 				holder.text = (TextView) convertView.findViewById(R.id.file_name);
-				holder.imageView = (ImageView) convertView.findViewById(R.id.file_avastar);
+				holder.imageView = (ImageView) convertView.findViewById(R.id.file_avatar);
 				holder.size = (TextView) convertView.findViewById(R.id.chatting_content_size);
 				holder.time = (TextView) convertView.findViewById(R.id.chat_time_tv);
 				

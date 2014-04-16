@@ -12,24 +12,25 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:gravity="center"
-        android:text="2014-06-12 12:13"
+        android:layout_marginBottom="4dp"
         android:background="@drawable/time_bg"
-        android:paddingTop="4dp"
+        android:gravity="center"
         android:paddingBottom="4dp"
         android:paddingLeft="10dp"
         android:paddingRight="10dp"
+        android:paddingTop="4dp"
+        android:text="2014-06-12 12:13"
         android:textColor="@color/white"
         android:visibility="visible" />
 
     <RelativeLayout
         android:id="@+id/RelativeLayout1"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal" >
 
         <FrameLayout
-            android:id="@+id/e"
+            android:id="@+id/frameLayout1"
             android:layout_width="60dip"
             android:layout_height="60dip"
             android:layout_alignParentLeft="true"
@@ -43,7 +44,6 @@
                 android:layout_gravity="center"
                 android:src="@drawable/avatar"
                 android:visibility="visible" />
-
         </FrameLayout>
 
         <TextView
@@ -52,14 +52,17 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:layout_toRightOf="@+id/e"
+            android:layout_marginLeft="4dp"
+            android:layout_toRightOf="@+id/frameLayout1"
             android:autoLink="web"
             android:background="@drawable/chatfrom_bg"
+            android:paddingBottom="15dp"
             android:paddingLeft="10dp"
             android:paddingRight="10dp"
             android:paddingTop="15dp"
-            android:paddingBottom="15dp"
+            android:text="你好 妹子"
             android:visibility="visible" />
+
     </RelativeLayout>
 
 </LinearLayout>

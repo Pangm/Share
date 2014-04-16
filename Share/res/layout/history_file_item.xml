@@ -17,7 +17,7 @@
         android:paddingTop="5dp" >
 
         <ImageView
-            android:id="@+id/file_avastar"
+            android:id="@+id/file_avatar"
             android:layout_width="48dip"
             android:layout_height="48dip"
             android:layout_gravity="center"

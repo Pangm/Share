@@ -13,6 +13,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
+        android:layout_marginBottom="6dp"
         android:background="@drawable/time_bg"
         android:paddingBottom="4dp"
         android:paddingLeft="10dp"
@@ -24,31 +25,32 @@
 
     <RelativeLayout
         android:id="@+id/RelativeLayout1"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal" >
 
         <FrameLayout
+            android:id="@+id/frameLayout1"
             android:layout_width="60dp"
             android:layout_height="60dp"
-            android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
             android:background="@drawable/avatar_to" >
 
             <com.michelle.share.widget.CircleImageView
-               android:id="@+id/user_avatar"
-               android:layout_width="45dip"
-               android:layout_height="45dip"
-               android:layout_gravity="center"
-               android:src="@drawable/avatar"
-               android:visibility="visible" />
+                android:id="@+id/user_avatar"
+                android:layout_width="45dip"
+                android:layout_height="45dip"
+                android:layout_gravity="center"
+                android:src="@drawable/avatar"
+                android:visibility="visible" />
         </FrameLayout>
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_toRightOf="@+id/h"
+            android:layout_alignParentTop="true"
+            android:layout_marginLeft="4dp"
+            android:layout_toRightOf="@+id/frameLayout1"
             android:background="@drawable/chatfrom_bg"
             android:orientation="horizontal"
             android:paddingBottom="5dp"
@@ -57,7 +59,7 @@
             android:paddingTop="5dp" >
 
             <ImageView
-                android:id="@+id/file_avastar"
+                android:id="@+id/file_avatar"
                 android:layout_width="48dip"
                 android:layout_height="48dip"
                 android:layout_gravity="center"
