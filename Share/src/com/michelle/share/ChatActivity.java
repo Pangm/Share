@@ -497,6 +497,19 @@ public class ChatActivity extends Activity implements IOnRefreshListener, IOnLoa
 				chatData.add(messages.get(messages.size()-1));
 				chatAdapter.notifyDataSetChanged(); 
 			} else if (intent.getAction().equals("android.intent.action.MSG_RECEIVE_PART")){
+				chatData.remove(chatData.getLast());
+				int value = intent.getIntExtra("value", 100);
+				try {
+					ImageFile file = (ImageFile) intent.getSerializableExtra("file");
+					Time time = new Time();
+					time.setToNow();
+					file.setTime(time);
+					ChatMessage chatMsg = new ChatMessage(ChatMessage.MESSAGE_FROM, file, file.getTime());
+					chatMsg.setProgressValue(value);
+					chatData.add(chatMsg);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
 				chatAdapter.notifyDataSetChanged(); 
 			}
 		}

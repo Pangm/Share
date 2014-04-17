@@ -65,7 +65,7 @@ public class TransferService extends IntentService {
                 try {
                 	iStream = cr.openInputStream(Uri.parse(fileUri));
                 	fileSize = (float) (iStream.available() / 1024);
-                	dataOutStream.writeFloat(fileSize);
+                	dataOutStream.writeInt(iStream.available());
                 	dataOutStream.flush();
                 } catch (FileNotFoundException e) {
                     Log.d(ChatActivity.TAG, e.toString());

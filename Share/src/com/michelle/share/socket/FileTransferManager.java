@@ -70,7 +70,7 @@ public class FileTransferManager implements Runnable {
 					// Read from the InputStream
 					Log.d(FileTransferManager.TAG, "Server: connection done");
 					String fileName = dataInputStream.readUTF();
-					float fileSize = dataInputStream.readFloat();
+					int fileSize = dataInputStream.readInt();
 					
 					// create a file to prepare for writing the received file content. 
 					final File f = new File(
@@ -87,7 +87,7 @@ public class FileTransferManager implements Runnable {
 					Log.d(FileTransferManager.TAG,
 							"server: copying files " + f.toString());
 					
-					float size = fileSize / (1024);
+					float size = fileSize / 1024f;
 					String name = f.getName();
 					String path = f.getAbsolutePath();
 					Time time = new Time();
@@ -112,14 +112,12 @@ public class FileTransferManager implements Runnable {
 							receivedCount += byteCount;
 							// Send the obtained file to the UI Activity
 							handler.obtainMessage(ShareChatService.FILE_READ_PART, receivedCount,
-									(int) fileSize,	fileName).sendToTarget();
+									fileSize, name).sendToTarget();
 						}
 						out.close();
 					} catch (IOException e) {
 						Log.d(FileTransferManager.TAG, e.toString());
 					}
-					
-					
 					
 				} catch (IOException e) {
 					Log.e(TAG, "disconnected", e);

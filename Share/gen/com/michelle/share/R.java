@@ -35,6 +35,7 @@ containing a value of this type.
         public static final int chat_layout_bg=0x7f040005;
         public static final int chat_time_bg=0x7f040006;
         public static final int gold=0x7f040008;
+        public static final int green=0x7f04000a;
         public static final int layout_border_color=0x7f040001;
         public static final int select=0x7f040009;
         public static final int status_bar_color=0x7f040000;

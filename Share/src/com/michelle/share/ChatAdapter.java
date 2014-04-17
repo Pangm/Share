@@ -47,17 +47,13 @@ public class ChatAdapter extends BaseAdapter {
 	}
 
 	@Override
-	public long getItemId(int position) {
-		return position;
-	}
-
-	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
 		ViewHolder holder = null;
 		ChatMessage message = chatMessages.get(position);
 		if (convertView == null
 				|| (holder = (ViewHolder) convertView.getTag()).flag != message
-						.getDirection()) {
+						.getDirection()
+						|| message.getProgressValue() != 100) {
 			holder = new ViewHolder();
 
 			Object object = message.getContent();
@@ -124,8 +120,10 @@ public class ChatAdapter extends BaseAdapter {
 						.findViewById(R.id.progress);
 
 				convertView.setTag(holder);
-				holder.time.setText(imageFile.getTime().format(
-						"%Y-%m-%d %H:%M:%S"));
+				if (imageFile.getTime() != null) {
+					holder.time.setText(imageFile.getTime().format(
+							"%Y-%m-%d %H:%M:%S"));
+				}
 				holder.text.setText(imageFile.getName());
 				float fileSize = imageFile.getSize();
 				if (imageFile.getSize() <= 512) {
@@ -140,7 +138,7 @@ public class ChatAdapter extends BaseAdapter {
 					holder.progress.setMax(100);
 					holder.progress.setProgress(message.getProgressValue());
 				} else {
-					holder.progress.setVisibility(ProgressBar.GONE);
+					//holder.progress.setVisibility(ProgressBar.GONE);
 				}
 				if (message.getDirection() == ChatMessage.MESSAGE_TO
 						|| message.getProgressValue() == 100) {
@@ -253,6 +251,12 @@ public class ChatAdapter extends BaseAdapter {
 		Drawable[] array = new Drawable[] { d1, d2 };
 		LayerDrawable ld = new LayerDrawable(array);
 		return ld;
+	}
+
+	@Override
+	public long getItemId(int position) {
+		// TODO Auto-generated method stub
+		return 0;
 	}
 
 }

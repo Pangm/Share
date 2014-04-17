@@ -80,7 +80,7 @@ public class ShareChatService extends Service implements Handler.Callback,
 			((ShareApplication) getApplication()).getMessages().add(chatMsg);
 
 			intent = new Intent();
-			intent.putExtra("Msg", readMessage);
+			intent.putExtra("Msg", readMessage);			
 			intent.setAction("android.intent.action.MSG_RECEIVE");// action与接收器相同
 			sendBroadcast(intent);
 			break;
@@ -93,18 +93,22 @@ public class ShareChatService extends Service implements Handler.Callback,
 			chatMsg.setProgressValue(0);
 			((ShareApplication) getApplication()).getMessages().add(chatMsg);
 			ImageFileService imageFileService = new ImageFileService(this);
-			ImageFile imageFile = (ImageFile) msg.obj;
-			
-			imageFileService.save(imageFile);
+			try {
+				ImageFile imageFile = (ImageFile) msg.obj;
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			//imageFileService.save(imageFile);
 			
 			intent = new Intent();
 			intent.setAction("android.intent.action.MSG_RECEIVE");// action与接收器相同
 			sendBroadcast(intent);
 			break;
 		case FILE_READ_PART:
+			chatMsg = null;
 			int receivedCount = msg.arg1;
 			int fileCount = msg.arg2;
-			int progressValue = (int) (receivedCount * 100f / fileCount);
+			int progressValue = (int) ((receivedCount * 100f) / fileCount);
 			String fileName = (String) msg.obj;
 			List<ChatMessage> messages = ((ShareApplication) getApplication()).getMessages();
 
@@ -112,15 +116,24 @@ public class ShareChatService extends Service implements Handler.Callback,
 				if (chatMsgTmp.getContent() instanceof ImageFile
 						&& ((ImageFile) chatMsgTmp.getContent()).getName().equals(fileName)) {
 					chatMsg = chatMsgTmp;
+					break;
 				}
 			}
-			chatMsg.setProgressValue(progressValue);
-			
-			intent = new Intent();
-			intent.setAction("android.intent.action.MSG_RECEIVE_PART");// action与接收器相同
-			sendBroadcast(intent);
-			
-			
+			if (chatMsg != null) {
+				try {
+					chatMsg.setProgressValue(progressValue);
+					intent = new Intent();
+					intent.putExtra("value", progressValue);
+					ImageFile file = (ImageFile) chatMsg.getContent();
+					file.setTime(null);
+					intent.putExtra("file", (ImageFile) chatMsg.getContent());
+					intent.setAction("android.intent.action.MSG_RECEIVE_PART");// action与接收器相同
+					sendBroadcast(intent);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				
+			}		
 			break;
 		case CONTACT_READ:
 			Contact Contact = (Contact) msg.obj;
