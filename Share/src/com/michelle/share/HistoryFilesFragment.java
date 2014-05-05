@@ -129,13 +129,15 @@ public class HistoryFilesFragment extends Fragment {
                 String name = imageFile.getName();
                 String path = imageFile.getPath();
                 Log.i(TAG, view.getClass().getName()); 
-                Toast.makeText(getActivity(), name, Toast.LENGTH_LONG).show(); 
                 
-                
-				Intent intent = new Intent();
-				intent.setAction(android.content.Intent.ACTION_VIEW);
-				intent.setDataAndType(Uri.parse("file://" + path), "image/*");
-				startActivity(intent);
+                try {
+					Intent intent = new Intent();
+					intent.setAction(android.content.Intent.ACTION_VIEW);
+					intent.setDataAndType(Uri.parse("file://" + path), "image/*");
+					startActivity(intent);
+                } catch (Exception e) {
+                	Toast.makeText(getActivity(), "对不起， " + name + " 已被删除。", Toast.LENGTH_LONG).show(); 
+                }
             }
         });
 		return rootView;
