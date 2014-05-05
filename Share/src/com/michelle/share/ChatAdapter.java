@@ -66,13 +66,13 @@ public class ChatAdapter extends BaseAdapter {
 	
 					convertView = LayoutInflater.from(context).inflate(R.layout.chat_item_from, null);
 					ImageView imageView_chatfrom = (ImageView) convertView.findViewById(R.id.user_avatar);
-					imageView_chatfrom.setImageDrawable(getImgDrawable(imageView_chatfrom,R.drawable.avatar_to,R.drawable.avatar4));
+					imageView_chatfrom.setImageDrawable(getImgDrawable(imageView_chatfrom,R.drawable.avatar_to,R.drawable.avatar7));
 					
 				} else {
 					holder.flag = ChatMessage.MESSAGE_TO;
 					convertView = LayoutInflater.from(context).inflate(R.layout.chat_item_to, null);
 					ImageView imageView_chatto = (ImageView) convertView.findViewById(R.id.chatto_image);
-					imageView_chatto.setImageDrawable(getImgDrawable(imageView_chatto,R.drawable.avatar_from,R.drawable.avatar7));
+					imageView_chatto.setImageDrawable(getImgDrawable(imageView_chatto,R.drawable.avatar_from,R.drawable.avatar4));
 				}
 	
 				holder.text = (TextView) convertView.findViewById(R.id.chatting_content_size);
@@ -87,12 +87,12 @@ public class ChatAdapter extends BaseAdapter {
 					holder.flag = ChatMessage.MESSAGE_FROM;
 					convertView = LayoutInflater.from(context).inflate(R.layout.media_msg_from, null);
 					ImageView userAvatar = (ImageView) convertView.findViewById(R.id.user_avatar);
-					userAvatar.setImageDrawable(getImgDrawable(userAvatar,R.drawable.avatar_to,R.drawable.avatar4));
+					userAvatar.setImageDrawable(getImgDrawable(userAvatar,R.drawable.avatar_to,R.drawable.avatar7));
 				} else {
 					holder.flag = ChatMessage.MESSAGE_TO;
 					convertView = LayoutInflater.from(context).inflate(R.layout.media_msg_to, null);
 					ImageView userAvatar = (ImageView) convertView.findViewById(R.id.user_avatar);
-					userAvatar.setImageDrawable(getImgDrawable(userAvatar,R.drawable.avatar_from,R.drawable.avatar7));
+					userAvatar.setImageDrawable(getImgDrawable(userAvatar,R.drawable.avatar_from,R.drawable.avatar4));
 				}
 				holder.text = (TextView) convertView.findViewById(R.id.file_name);
 				holder.imageView = (ImageView) convertView.findViewById(R.id.file_avatar);
@@ -142,12 +142,12 @@ public class ChatAdapter extends BaseAdapter {
 					holder.flag = ChatMessage.MESSAGE_FROM;
 					convertView = LayoutInflater.from(context).inflate(R.layout.media_msg_from, null);
 					ImageView imageView_chatfrom = (ImageView) convertView.findViewById(R.id.user_avatar);
-					imageView_chatfrom.setImageDrawable(getImgDrawable(imageView_chatfrom,R.drawable.avatar_to,R.drawable.avatar4));
+					imageView_chatfrom.setImageDrawable(getImgDrawable(imageView_chatfrom,R.drawable.avatar_to,R.drawable.avatar7));
 				} else {
 					holder.flag = ChatMessage.MESSAGE_TO;
 					convertView = LayoutInflater.from(context).inflate(R.layout.media_msg_to, null);
 					ImageView imageView_chatto = (ImageView) convertView.findViewById(R.id.user_avatar);
-					imageView_chatto.setImageDrawable(getImgDrawable(imageView_chatto,R.drawable.avatar_from,R.drawable.avatar7));
+					imageView_chatto.setImageDrawable(getImgDrawable(imageView_chatto,R.drawable.avatar_from,R.drawable.avatar4));
 				}
 				holder.text = (TextView) convertView.findViewById(R.id.file_name);
 				holder.imageView = (ImageView) convertView.findViewById(R.id.file_avatar);
