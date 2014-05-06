@@ -32,6 +32,11 @@ public class ReceivedFilesAdapter extends BaseAdapter {
         mImageLoader = new ImageLoader(context);  
     }  
 	
+	public void Update(List<ImageFile> files) {
+		this.files = files;
+		this.notifyDataSetChanged();
+	}
+	
 	public ImageLoader getImageLoader(){  
         return mImageLoader;  
     } 

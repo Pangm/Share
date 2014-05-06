@@ -1,5 +1,6 @@
 package com.michelle.share;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -59,52 +60,6 @@ public class HistoryFilesFragment extends Fragment {
 		super.onCreate(savedInstanceState);
 		ImageFileService imageFileService = new ImageFileService(this.getActivity());
         final LayoutInflater mInflater = getLayoutInflater(savedInstanceState);//inflater ;
-//        Cursor cursor = imageFileService.getRawScrollData(0, 10);  
-//        adapter = new CursorAdapter(getActivity(), cursor, true)
-//        {//重写两个方法
-//            @Override
-//            public View newView(Context context, Cursor cursor, ViewGroup parent)
-//            {//找到布局和控件
-//                ViewHolder holder = new ViewHolder();
-//                View item = mInflater.inflate(R.layout.history_file_item, null);
-//                holder.fileName = (TextView) item.findViewById(R.id.file_name);
-//                holder.fileSize = (TextView) item.findViewById(R.id.chatting_content_size);
-//                holder.fileImageView = (ImageView) item.findViewById(R.id.file_avaster);
-//                holder.fileReceiveTime = (TextView) item.findViewById(R.id.file_receive_time);
-//                //holder.filePath
-//                item.setTag(holder);
-//                return item;//返回的view传给bindView。
-//            }
-//                                                             
-//            @Override
-//            public void bindView(View view, Context context, Cursor cursor)
-//            {//复用布局。
-////                把数据设置到界面上
-//                ViewHolder holder = (ViewHolder) view.getTag();
-//                String name = cursor.getString(cursor.getColumnIndex("name"));
-//                String path = cursor.getString(cursor.getColumnIndex("path"));
-//                Time time = new Time();
-//                time.parse(cursor.getString(cursor.getColumnIndex("time")));
-//                
-//                Float size = cursor.getFloat(cursor.getColumnIndex("size"));
-//                if (size <= 512) {
-//					holder.fileSize.setText(size + " KB");
-//				} else {
-//					holder.fileSize.setText(size/1000 + " MB");
-//				}
-//                holder.fileName.setText(name);
-//                holder.fileReceiveTime.setText(time.format("%Y-%m-%d %H:%M:%S"));
-//                Bitmap img = getImageThumbnail(path, 160, 160);
-//				holder.fileImageView.setImageBitmap(img);
-////                loadImage(holder.fileImageView, path);
-//            }
-//            
-//
-//        	private void loadImage(ImageView image,String path){
-//                new LoadImages(image, path).execute();
-//            }
-//                                                         
-//        };
         receivedFilesAdapter = new ReceivedFilesAdapter(this.getActivity(), 
         		imageFileService.getScrollData(0, 10));
         
@@ -129,15 +84,38 @@ public class HistoryFilesFragment extends Fragment {
                 String name = imageFile.getName();
                 String path = imageFile.getPath();
                 Log.i(TAG, view.getClass().getName()); 
-                Toast.makeText(getActivity(), name, Toast.LENGTH_LONG).show(); 
                 
-                
-				Intent intent = new Intent();
-				intent.setAction(android.content.Intent.ACTION_VIEW);
-				intent.setDataAndType(Uri.parse("file://" + path), "image/*");
-				startActivity(intent);
+                try {
+					Intent intent = new Intent();
+					intent.setAction(android.content.Intent.ACTION_VIEW);
+					intent.setDataAndType(Uri.parse("file://" + path), "image/*");
+					startActivity(intent);
+                } catch (Exception e) {
+                	Toast.makeText(getActivity(), "对不起， " + name + " 已被删除。", Toast.LENGTH_LONG).show(); 
+                }
             }
         });
-		return rootView;
+        final ImageFileService imageFileService = new ImageFileService(this.getActivity());
+        listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+
+			@Override
+			public boolean onItemLongClick(AdapterView<?> parent, View view,
+					int position, long id) {
+				ListView listView = (ListView) parent;
+                ImageFile imageFile = (ImageFile) parent.getItemAtPosition(position);
+                
+                File file = new File(imageFile.getPath());
+                
+                if (file.exists() && file.isFile() && file.delete()) {
+        			Toast.makeText(getActivity(), imageFile.getName() + " 已被删除。", Toast.LENGTH_LONG).show();
+        			imageFileService.delete(imageFile.getId());
+                    receivedFilesAdapter.Update(imageFileService.getScrollData(0, 10));
+                }
+                
+				return true;
+			}
+		});
+        return rootView;
+        
 	}
 }
