@@ -1,5 +1,6 @@
 package com.michelle.share;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -140,6 +141,27 @@ public class HistoryFilesFragment extends Fragment {
                 }
             }
         });
-		return rootView;
+        final ImageFileService imageFileService = new ImageFileService(this.getActivity());
+        listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+
+			@Override
+			public boolean onItemLongClick(AdapterView<?> parent, View view,
+					int position, long id) {
+				ListView listView = (ListView) parent;
+                ImageFile imageFile = (ImageFile) parent.getItemAtPosition(position);
+                
+                File file = new File(imageFile.getPath());
+                
+                if (file.exists() && file.isFile() && file.delete()) {
+        			Toast.makeText(getActivity(), imageFile.getName() + " ÒÑ±»É¾³ý¡£", Toast.LENGTH_LONG).show();
+        			imageFileService.delete(imageFile.getId());
+                    receivedFilesAdapter.Update(imageFileService.getScrollData(0, 10));
+                }
+                
+				return true;
+			}
+		});
+        return rootView;
+        
 	}
 }
