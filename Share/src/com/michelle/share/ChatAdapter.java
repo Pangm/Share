@@ -54,7 +54,7 @@ public class ChatAdapter extends BaseAdapter {
 		
 		// 找到相应的视图
 		if (rowView == null 
-				|| (holder = (ViewHolder) rowView.getTag()).flag != message.getDirection()) {
+				|| ((ViewHolder) rowView.getTag()).flag != message.getDirection()) {
 
 			holder = new ViewHolder();
 
@@ -68,7 +68,7 @@ public class ChatAdapter extends BaseAdapter {
 			holder.userImageView = (ImageView) rowView.findViewById(R.id.user_avatar);
 			holder.text = (TextView) rowView.findViewById(R.id.file_name);
 			holder.imageView = (ImageView) rowView.findViewById(R.id.file_avatar);
-			holder.size = (TextView) rowView.findViewById(R.id.chatting_content_size);
+			holder.size = (TextView) rowView.findViewById(R.id.chat_content_size);
 			holder.time = (TextView) rowView.findViewById(R.id.chat_time_tv);
 			holder.progressBar = (ProgressBar) rowView.findViewById(R.id.progress);
 			
@@ -114,50 +114,49 @@ public class ChatAdapter extends BaseAdapter {
 				holder.progressBar.setVisibility(ProgressBar.GONE);
 			}
 
-//			if (message.getDirection() == ChatMessage.MESSAGE_TO
-//					|| message.getProgressValue() == 100) {
-//				Bitmap img = BitmapFactory.decodeFile(imageFile.getPath());
-//				holder.imageView.setImageBitmap(img);
-//				if (img == null) {
-//					InputStream is;
-//					try {
-//						is = context.getContentResolver().openInputStream(
-//								Uri.parse(imageFile.getPath()));
-//						img = BitmapFactory.decodeStream(is);
-//						holder.imageView.setImageBitmap(img);
-//					} catch (FileNotFoundException e1) {
-//						// TODO Auto-generated catch block
-//						e1.printStackTrace();
-//					}
-//				}
-//			}
+			holder.text.setText(imageFile.getName());
+			
 			float fileSize = imageFile.getSize();
 			if (imageFile.getSize() <= 512) {
-				holder.size.setText(fileSize + " KB");
+				holder.size.setText(new  DecimalFormat(".##").format(fileSize) + " KB");
 			} else {
-				fileSize /= 1024;
+				fileSize /= 1024f;
 				holder.size.setText(new  DecimalFormat(".##").format(fileSize) + " MB");
 			}
 			
-			try
-			{
-				Bitmap img = BitmapFactory.decodeFile(imageFile.getPath());
-				if (img == null) {
-					InputStream is;
-					try {
-						is = context.getContentResolver().
-								openInputStream(Uri.parse(imageFile.getPath()));
-						img = BitmapFactory.decodeStream(is);
-					} catch (FileNotFoundException e1) {
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
+			int fileType = imageFile.getType();
+			
+			switch (fileType) {
+			case 0:
+				try
+				{
+					Bitmap img = BitmapFactory.decodeFile(imageFile.getPath());
+					if (img == null) {
+						InputStream is;
+						try {
+							is = context.getContentResolver().
+									openInputStream(Uri.parse(imageFile.getPath()));
+							img = BitmapFactory.decodeStream(is);
+							is.close();
+						} catch (FileNotFoundException e1) {
+							e1.printStackTrace();
+						}
 					}
-				}
 
-				holder.imageView.setImageBitmap(img);
-			} catch (Exception e) {				
-				e.printStackTrace();
+					holder.imageView.setImageBitmap(img);
+				} catch (Exception e) {				
+					e.printStackTrace();
+				}
+				break;
+			case 1:
+				holder.imageView.setImageResource(R.drawable.ic_music);
+				break;
+			case 2:
+				holder.imageView.setImageResource(R.drawable.ic_video);
+				break;
 			}
+				
+			
 		} else if (content instanceof Contact) {
 			Contact contact = (Contact) content;
 			
@@ -187,7 +186,6 @@ public class ChatAdapter extends BaseAdapter {
 	 */
 	@Override
 	public int getItemViewType(int position) {
-		// TODO Auto-generated method stub
 		return 2;
 	}
 

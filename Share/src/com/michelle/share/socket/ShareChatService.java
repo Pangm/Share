@@ -128,12 +128,13 @@ public class ShareChatService extends Service implements Handler.Callback,
 						bar.setProgress(progressValue);
 						bar.notify();
 					}
-					if (progressValue == 100) {
+					if (receivedCount == fileCount) {
+						chatMsg.setProgressValue(100);
 						intent = new Intent();
 						intent.setAction("android.intent.action.FILE_RECEIVE_COMPLETED");
 						sendBroadcast(intent);
-						ImageFileService imageFileService = new ImageFileService(this);
-						imageFileService.save((ImageFile) chatMsg.getContent());
+//						ImageFileService imageFileService = new ImageFileService(this);
+//						imageFileService.save((ImageFile) chatMsg.getContent());
 					}
 //					intent = new Intent();
 //					intent.putExtra("value", progressValue);
@@ -170,7 +171,6 @@ public class ShareChatService extends Service implements Handler.Callback,
 			time1.setToNow();
 			ChatMessage chatMsg1 = new ChatMessage(ChatMessage.MESSAGE_FROM,
 					readMessage1, time1);
-			// (chatFragment).pushMessage("Buddy: " + readMessage);
 			((ShareApplication) getApplication()).getMessages().add(chatMsg1);
 
 			Intent intent1 = new Intent();

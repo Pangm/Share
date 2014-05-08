@@ -68,7 +68,7 @@ public class ReceivedFilesAdapter extends BaseAdapter {
 	            viewHolder.mFileImageIV = (ImageView) convertView  
 	                    .findViewById(R.id.file_avatar);
 	            viewHolder.mFileSizeTV = (TextView) convertView
-	            		.findViewById(R.id.chatting_content_size);
+	            		.findViewById(R.id.chat_content_size);
 	            viewHolder.mReceivedTimeTV = (TextView) convertView
 	            		.findViewById(R.id.file_receive_time);
 	            convertView.setTag(viewHolder);  
@@ -93,7 +93,7 @@ public class ReceivedFilesAdapter extends BaseAdapter {
 	        
 	        // set value of size text view according size value. 
 	        if (size <= 512) {
-	        	viewHolder.mFileSizeTV.setText(size + " KB");
+	        	viewHolder.mFileSizeTV.setText(new  DecimalFormat(".##").format(size) + " KB");
 			} else {
 				size /= 1024;
 				viewHolder.mFileSizeTV.setText(new  DecimalFormat(".##").format(size) + " MB");

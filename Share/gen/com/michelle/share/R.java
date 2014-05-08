@@ -112,10 +112,10 @@ containing a value of this type.
         public static final int atn_direct_enable=0x7f090034;
         public static final int atn_settings=0x7f090036;
         public static final int btn_send=0x7f090004;
+        public static final int chat_content_size=0x7f09000d;
         public static final int chat_layout=0x7f090000;
         public static final int chat_list=0x7f090001;
         public static final int chat_time_tv=0x7f090009;
-        public static final int chatting_content_size=0x7f09000d;
         public static final int chatting_state_iv=0x7f09000e;
         public static final int chatto_image=0x7f090010;
         public static final int circleImageView1=0x7f090015;

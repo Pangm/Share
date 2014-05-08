@@ -22,6 +22,7 @@ import com.michelle.share.widget.RefreshListView.IOnRefreshListener;
 import android.net.Uri;
 import android.net.wifi.p2p.WifiP2pInfo;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.RemoteException;
@@ -186,8 +187,22 @@ public class ChatActivity extends Activity implements IOnRefreshListener,
 					try {
 						Intent intent = new Intent();
 						intent.setAction(android.content.Intent.ACTION_VIEW);
-						intent.setDataAndType(Uri.parse("file://" + path),
-								"image/*");
+						
+						switch (((ImageFile) content).getType()) {
+						case 0:
+							intent.setDataAndType(Uri.parse("file://" + path),
+									"image/*");
+							break;
+						case 1:
+							intent.setDataAndType(Uri.parse("file://" + path),
+									"audio/*");
+							break;
+						case 2:
+							intent.setDataAndType(Uri.parse("file://" + path),
+									"video/*");
+							break;
+						}
+						
 						startActivity(intent);
 					} catch (Exception e) {
 						Toast.makeText(view.getContext(),
@@ -315,20 +330,24 @@ public class ChatActivity extends Activity implements IOnRefreshListener,
 				TextView text = (TextView) view
 						.findViewById(R.id.file_unit_text);
 
+				Intent intent;
+				if (Build.VERSION.SDK_INT < 19) {
+					intent = new Intent(Intent.ACTION_GET_CONTENT);
+				} else {
+					intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+                    intent.addCategory(Intent.CATEGORY_OPENABLE);
+				}
 				if (text.getText().equals("图片")) {
-					Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
 					intent.setType("image/*");
 					startActivityForResult(intent, CHOOSE_PHOTO_RESULT_CODE);
 				} else if (text.getText().equals("音乐")) {
-					Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
 					intent.setType("audio/*");
 					startActivityForResult(intent, CHOOSE_MUSIC_RESULT_CODE);
 				} else if (text.getText().equals("视频")) {
-					Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
 					intent.setType("video/*");
 					startActivityForResult(intent, CHOOSE_VIDEO_RESULT_CODE);
 				} else if (text.getText().equals("联系人")) {
-					Intent intent = new Intent(Intent.ACTION_PICK);
+					intent = new Intent(Intent.ACTION_PICK);
 					intent.setType(ContactsContract.Contacts.CONTENT_TYPE);
 					startActivityForResult(intent, CHOOSE_CONTACT_RESULT_CODE);
 				}
@@ -388,7 +407,17 @@ public class ChatActivity extends Activity implements IOnRefreshListener,
 			startService(serviceIntent);
 
 			// messages.add(new ChatMessage(ChatMessage.MESSAGE_TO, ))
-		} else if (requestCode == CHOOSE_CONTACT_RESULT_CODE) {
+		} else if (requestCode == CHOOSE_MUSIC_RESULT_CODE
+				|| requestCode == CHOOSE_VIDEO_RESULT_CODE) {
+			
+			Intent serviceIntent = new Intent(this, TransferService.class);
+			serviceIntent.setAction(TransferService.ACTION_SEND_FILE);
+			serviceIntent.putExtra(TransferService.EXTRAS_FILE_PATH,
+					uri.toString());
+			
+			startService(serviceIntent);
+		}
+		else if (requestCode == CHOOSE_CONTACT_RESULT_CODE) {
 			uri = data.getData();
 			Cursor cursor = getContentResolver().query(uri, null, null, null,
 					null);
@@ -573,7 +602,7 @@ public class ChatActivity extends Activity implements IOnRefreshListener,
 				}
 				chatAdapter.notifyDataSetChanged(); 
 			} else  if (intent.getAction().equals("android.intent.action.FILE_RECEIVE_COMPLETED")) {
-				chatAdapter.refreshData(chatData);
+				chatAdapter.notifyDataSetChanged(); 
 			}
 		}
 

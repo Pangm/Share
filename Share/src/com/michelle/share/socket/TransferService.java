@@ -27,6 +27,7 @@ import android.os.Bundle;
 import android.provider.MediaStore.MediaColumns;
 import android.text.format.Time;
 import android.util.Log;
+import android.webkit.MimeTypeMap;
 
 public class TransferService extends IntentService {
 	public static final String ACTION_SEND_FILE = "com.michelle.share.socket.SEND_FILE";
@@ -53,18 +54,34 @@ public class TransferService extends IntentService {
             
             try {
             	OutputStream oStream = ((ShareApplication) getApplication()).getoStream();
+            	ContentResolver cr = context.getContentResolver();
+            	String mimeType = cr.getType(Uri.parse(fileUri));
+            	MimeTypeMap mime = MimeTypeMap.getSingleton();
+            	String type = mime.getExtensionFromMimeType(mimeType);
+            	
             	DataOutputStream dataOutStream = new DataOutputStream(oStream);
-            	String fileName = ("image" + System.currentTimeMillis());
+            	int fileType = 0;
+            	if (mimeType.startsWith("image")) {
+            		fileType = 0;
+            	} else if (mimeType.startsWith("audio")) {
+            		fileType = 1;
+            	} else if (mimeType.startsWith("video")) {
+            		fileType = 2;
+            	}
+            	
+            	dataOutStream.writeInt(fileType);
+            	
+            	String fileName = (System.currentTimeMillis() + "." + type);
+            	
             	Float fileSize = 0f;
             	String filePath = fileUri;
             	Time time = new Time();
             	dataOutStream.writeUTF(fileName);
             	dataOutStream.flush();
-                ContentResolver cr = context.getContentResolver();
                 InputStream iStream = null;
                 try {
                 	iStream = cr.openInputStream(Uri.parse(fileUri));
-                	fileSize = (float) (iStream.available() / 1024);
+                	fileSize = iStream.available() / 1024f;
                 	dataOutStream.writeInt(iStream.available());
                 	dataOutStream.flush();
                 } catch (FileNotFoundException e) {
@@ -75,6 +92,9 @@ public class TransferService extends IntentService {
                 
                 time.setToNow();
                 ImageFile imageFile = new ImageFile(fileName, fileSize, filePath, time);
+                
+                //
+                imageFile.setType(fileType);
                 
                 // notify the UI that we are goting to send a file.
                 List<ChatMessage> messages = ((ShareApplication) getApplication()).getMessages();

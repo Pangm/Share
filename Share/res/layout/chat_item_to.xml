@@ -33,7 +33,7 @@
             android:layout_height="wrap_content"
             android:layout_alignBaseline="@+id/d"
             android:layout_alignParentTop="true"
-            android:layout_toLeftOf="@+id/chatting_content_size" />
+            android:layout_toLeftOf="@+id/chat_content_size" />
 
         <FrameLayout
             android:id="@+id/frameLayout1"
@@ -52,7 +52,7 @@
         </FrameLayout>
 
         <TextView
-            android:id="@+id/chatting_content_size"
+            android:id="@+id/chat_content_size"
             style="@style/ChatUIText"
             android:layout_centerVertical="true"
             android:layout_marginRight="4dp"

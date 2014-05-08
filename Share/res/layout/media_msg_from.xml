@@ -82,7 +82,7 @@
                     android:text="Img.1234.jpg" />
 
                 <TextView
-                    android:id="@+id/chatting_content_size"
+                    android:id="@+id/chat_content_size"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:paddingTop="5dp"

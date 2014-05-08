@@ -69,6 +69,7 @@ public class FileTransferManager implements Runnable {
 				try {
 					// Read from the InputStream
 					Log.d(FileTransferManager.TAG, "Server: connection done");
+					int fileType = dataInputStream.readInt();
 					String fileName = dataInputStream.readUTF();
 					int fileSize = dataInputStream.readInt();
 					
@@ -76,7 +77,7 @@ public class FileTransferManager implements Runnable {
 					final File f = new File(
 							Environment.getExternalStorageDirectory() + "/"
 									+ "MichelleShare" + "/"
-									+ fileName + ".jpg");
+									+ fileName);
 
 					File dirs = new File(f.getParent());
 					
@@ -94,6 +95,7 @@ public class FileTransferManager implements Runnable {
 					time.setToNow();
 					
 					ImageFile imageFile = new ImageFile(name, size, path, time);
+					imageFile.setType(fileType);
 					
 					// Send the obtained file to the UI Activity
 					handler.obtainMessage(ShareChatService.FILE_READ, 0, -1,

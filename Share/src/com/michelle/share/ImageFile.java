@@ -14,6 +14,7 @@ public class ImageFile implements Serializable{
 	private String name;
 	private String path;
 	private Time time;
+	private int type;
 	
 	public ImageFile(int id, String name, float size, String path, Time time) {
 		super();
@@ -31,6 +32,7 @@ public class ImageFile implements Serializable{
 		this.name = name;
 		this.path = path;
 		this.time = time;
+		this.type = 0;
 	}
 
 	/**
@@ -101,5 +103,13 @@ public class ImageFile implements Serializable{
 	 */
 	public void setTime(Time time) {
 		this.time = time;
+	}
+
+	public int getType() {
+		return type;
+	}
+
+	public void setType(int type) {
+		this.type = type;
 	}
 }
