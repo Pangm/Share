@@ -21,6 +21,7 @@ import android.os.IBinder;
 import android.os.Message;
 import android.text.format.Time;
 import android.util.Log;
+import android.widget.ProgressBar;
 
 public class ShareChatService extends Service implements Handler.Callback,
 		MessageTarget {
@@ -38,9 +39,6 @@ public class ShareChatService extends Service implements Handler.Callback,
 	static final int SERVER_FILE_PORT = 4546;
 	static final int SERVER_CONTACT_PORT = 4547;
 	private static final String TAG = "Share ChatSevice";
-	
-	
-	
 	
 	private ChatManager chatManager = null;
 	private FileTransferManager fileTransferManager = null;
@@ -76,6 +74,7 @@ public class ShareChatService extends Service implements Handler.Callback,
 			time.setToNow();
 			chatMsg = new ChatMessage(ChatMessage.MESSAGE_FROM,
 					readMessage, time);
+			chatMsg.setProgressValue(100);
 			// (chatFragment).pushMessage("Buddy: " + readMessage);
 			((ShareApplication) getApplication()).getMessages().add(chatMsg);
 
@@ -90,9 +89,11 @@ public class ShareChatService extends Service implements Handler.Callback,
 			time.setToNow();
 			chatMsg = new ChatMessage(ChatMessage.MESSAGE_FROM,
 					msg.obj, time);
+			
 			chatMsg.setProgressValue(0);
+			
 			((ShareApplication) getApplication()).getMessages().add(chatMsg);
-			ImageFileService imageFileService = new ImageFileService(this);
+			
 			try {
 				ImageFile imageFile = (ImageFile) msg.obj;
 			} catch (Exception e) {
@@ -122,13 +123,25 @@ public class ShareChatService extends Service implements Handler.Callback,
 			if (chatMsg != null) {
 				try {
 					chatMsg.setProgressValue(progressValue);
-					intent = new Intent();
-					intent.putExtra("value", progressValue);
-					ImageFile file = (ImageFile) chatMsg.getContent();
-					file.setTime(null);
-					intent.putExtra("file", (ImageFile) chatMsg.getContent());
-					intent.setAction("android.intent.action.MSG_RECEIVE_PART");// action与接收器相同
-					sendBroadcast(intent);
+					ProgressBar bar = chatMsg.getProgressBar();
+					if (bar != null) {
+						bar.setProgress(progressValue);
+						bar.notify();
+					}
+					if (progressValue == 100) {
+						intent = new Intent();
+						intent.setAction("android.intent.action.FILE_RECEIVE_COMPLETED");
+						sendBroadcast(intent);
+						ImageFileService imageFileService = new ImageFileService(this);
+						imageFileService.save((ImageFile) chatMsg.getContent());
+					}
+//					intent = new Intent();
+//					intent.putExtra("value", progressValue);
+//					ImageFile file = (ImageFile) chatMsg.getContent();
+//					file.setTime(null);
+//					intent.putExtra("file", (ImageFile) chatMsg.getContent());
+//					intent.setAction("android.intent.action.MSG_RECEIVE_PART");// action与接收器相同
+//					sendBroadcast(intent);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -141,6 +154,7 @@ public class ShareChatService extends Service implements Handler.Callback,
 			time = new Time();
 			time.setToNow();
 			chatMsg = new ChatMessage(ChatMessage.MESSAGE_FROM, msg.obj, time);
+			chatMsg.setProgressValue(100);
 			((ShareApplication) getApplication()).getMessages().add(chatMsg);
 			
 			intent = new Intent();

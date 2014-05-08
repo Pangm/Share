@@ -1,6 +1,7 @@
 package com.michelle.share;
 
 import android.text.format.Time;
+import android.widget.ProgressBar;
 
 public class ChatMessage {
 	public static final int MESSAGE_FROM = 0;
@@ -10,15 +11,16 @@ public class ChatMessage {
 	private Object content;
 	private Time time;
 	private int progressValue;
-
-	public ChatMessage(int direction, Object content, Time time) {
-		super();
-		this.direction = direction;
-		this.content = content;
-		this.time = time;
-		this.progressValue = 100;
+	private ProgressBar progressBar;
+	
+	public void setProgressBar(ProgressBar progressBar) {
+		this.progressBar = progressBar;
 	}
-
+	
+	public ProgressBar getProgressBar() {
+		return this.progressBar;
+	}
+	
 	public int getProgressValue() {
 		return progressValue;
 	}
@@ -28,7 +30,16 @@ public class ChatMessage {
 			this.progressValue = progressValue;
 		}
 	}
-
+	
+	public ChatMessage(int direction, Object content, Time time) {
+		super();
+		this.direction = direction;
+		this.content = content;
+		this.time = time;
+		this.progressValue = 100;
+		this.progressBar = null;
+	}
+	
 	/**
 	 * @return the time
 	 */

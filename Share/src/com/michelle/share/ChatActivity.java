@@ -142,6 +142,7 @@ public class ChatActivity extends Activity implements IOnRefreshListener,
 		IntentFilter filter = new IntentFilter();
 		filter.addAction("android.intent.action.MSG_RECEIVE");
 		filter.addAction("android.intent.action.MSG_RECEIVE_PART");
+		filter.addAction("android.intent.action.FILE_RECEIVE_COMPLETED");
 		
 		registerReceiver(receiver,filter);
 		// set chatList adapter
@@ -286,7 +287,6 @@ public class ChatActivity extends Activity implements IOnRefreshListener,
 								.replaceAll("\t", "").replaceAll("\n", "")
 								.replaceAll("\f", "")) != "") {
 					sendMessage(msg);
-
 				}
 				mgsText.setText("");
 			}
@@ -572,6 +572,8 @@ public class ChatActivity extends Activity implements IOnRefreshListener,
 					e.printStackTrace();
 				}
 				chatAdapter.notifyDataSetChanged(); 
+			} else  if (intent.getAction().equals("android.intent.action.FILE_RECEIVE_COMPLETED")) {
+				chatAdapter.refreshData(chatData);
 			}
 		}
 
@@ -600,7 +602,7 @@ public class ChatActivity extends Activity implements IOnRefreshListener,
 		@Override
 		protected Void doInBackground(Void... arg0) {
 			try {
-				Thread.sleep(2000);
+				Thread.sleep(500);
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

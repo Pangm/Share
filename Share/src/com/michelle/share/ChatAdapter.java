@@ -70,12 +70,16 @@ public class ChatAdapter extends BaseAdapter {
 			holder.imageView = (ImageView) rowView.findViewById(R.id.file_avatar);
 			holder.size = (TextView) rowView.findViewById(R.id.chatting_content_size);
 			holder.time = (TextView) rowView.findViewById(R.id.chat_time_tv);
+			holder.progressBar = (ProgressBar) rowView.findViewById(R.id.progress);
 			
-//			holder.progress = (ProgressBar) rowView.findViewById(R.id.progress);
-
+			holder.chatMessage = message;
 			rowView.setTag(holder);
 		} else {
 			holder = (ViewHolder) rowView.getTag();
+			
+			holder.chatMessage.setProgressBar(null);
+			holder.chatMessage = message;
+			holder.chatMessage.setProgressBar(holder.progressBar);
 		}
 		
 		Object content = message.getContent();
@@ -90,6 +94,7 @@ public class ChatAdapter extends BaseAdapter {
 		// ¸ºÖµ
 		holder.time.setText(message.getTime().format("%Y-%m-%d %H:%M:%S"));
 		if (content instanceof String) {
+			holder.progressBar.setVisibility(View.GONE);
 			holder.imageView.setVisibility(View.GONE);
 			holder.size.setVisibility(View.GONE);
 			
@@ -100,12 +105,14 @@ public class ChatAdapter extends BaseAdapter {
 			holder.imageView.setVisibility(View.VISIBLE);
 			holder.size.setVisibility(View.VISIBLE);
 			
-//			if (message.getProgressValue() != 100) {
-//				holder.progress.setMax(100);
-//				holder.progress.setProgress(message.getProgressValue());
-//			} else {
-//				//holder.progress.setVisibility(ProgressBar.GONE);
-//			}
+			if (message.getProgressValue() != 100) {
+				holder.progressBar.setVisibility(View.VISIBLE);
+				holder.progressBar.setMax(100);
+				holder.progressBar.setProgress(message.getProgressValue());
+				holder.progressBar.invalidate();
+			} else {
+				holder.progressBar.setVisibility(ProgressBar.GONE);
+			}
 
 //			if (message.getDirection() == ChatMessage.MESSAGE_TO
 //					|| message.getProgressValue() == 100) {
@@ -154,6 +161,7 @@ public class ChatAdapter extends BaseAdapter {
 		} else if (content instanceof Contact) {
 			Contact contact = (Contact) content;
 			
+			holder.progressBar.setVisibility(View.GONE);
 			holder.imageView.setVisibility(View.VISIBLE);
 			holder.size.setVisibility(View.GONE);
 			
@@ -195,7 +203,8 @@ public class ChatAdapter extends BaseAdapter {
 	}
 
 	static class ViewHolder {
-		ProgressBar progress;
+		public ChatMessage chatMessage;
+		ProgressBar progressBar;
 		ImageView userImageView;
 		TextView text;
 		int flag;

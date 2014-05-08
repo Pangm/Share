@@ -90,6 +90,15 @@
                     android:paddingRight="5dp"
                     android:paddingTop="5dp"
                     android:text="2.2M" />
+                <ProgressBar
+                    android:id="@+id/progress"
+                    style="?android:attr/progressBarStyleHorizontal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+<!--                     android:max="100" -->
+<!--                     android:progress="0" -->
+<!--                     android:progressDrawable="@color/green" -->
+              
             </LinearLayout>
         </LinearLayout>
     </RelativeLayout>
