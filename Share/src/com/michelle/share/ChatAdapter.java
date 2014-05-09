@@ -86,9 +86,9 @@ public class ChatAdapter extends BaseAdapter {
 		
 		// 头像负值
 		if (holder.flag == ChatMessage.MESSAGE_FROM) {
-			holder.userImageView.setImageResource(R.drawable.avatar7);
-		} else {
 			holder.userImageView.setImageResource(R.drawable.avatar4);
+		} else {
+			holder.userImageView.setImageResource(R.drawable.avatar7);
 		}		
 		
 		// 负值
@@ -99,8 +99,8 @@ public class ChatAdapter extends BaseAdapter {
 			holder.size.setVisibility(View.GONE);
 			
 			holder.text.setText((String) content);
-		} else if (content instanceof ImageFile) {
-			ImageFile imageFile = (ImageFile) content;
+		} else if (content instanceof ShareFile) {
+			ShareFile imageFile = (ShareFile) content;
 			
 			holder.imageView.setVisibility(View.VISIBLE);
 			holder.size.setVisibility(View.VISIBLE);
@@ -153,6 +153,8 @@ public class ChatAdapter extends BaseAdapter {
 				break;
 			case 2:
 				holder.imageView.setImageResource(R.drawable.ic_video);
+				break;
+			default:
 				break;
 			}
 				

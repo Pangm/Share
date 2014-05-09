@@ -49,10 +49,6 @@
         <service android:name="com.michelle.share.socket.TransferService" >
         </service>
 
-        <activity
-            android:name="com.michelle.share.ThumbnailActivity"
-            android:label="@string/title_activity_thumbnail" >
-        </activity>
     </application>
 
 </manifest>

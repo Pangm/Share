@@ -14,7 +14,7 @@ import java.net.Socket;
 import java.util.Arrays;
 
 import com.michelle.share.Contact;
-import com.michelle.share.ImageFile;
+import com.michelle.share.ShareFile;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;

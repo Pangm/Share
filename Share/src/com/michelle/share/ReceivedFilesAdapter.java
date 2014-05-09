@@ -24,15 +24,15 @@ public class ReceivedFilesAdapter extends BaseAdapter {
 
 	private ImageLoader mImageLoader;
 	private Context mContext;
-	private List<ImageFile> files;
+	private List<ShareFile> files;
 	
-	public ReceivedFilesAdapter(Context context, List<ImageFile> files) {
+	public ReceivedFilesAdapter(Context context, List<ShareFile> files) {
         this.mContext = context;  
         this.files = files;  
         mImageLoader = new ImageLoader(context);  
     }  
 	
-	public void Update(List<ImageFile> files) {
+	public void Update(List<ShareFile> files) {
 		this.files = files;
 		this.notifyDataSetChanged();
 	}
@@ -78,18 +78,31 @@ public class ReceivedFilesAdapter extends BaseAdapter {
 	        
 	        viewHolder.mFileImageIV.setImageResource(R.drawable.ic_photo);  
 	        
-	        ImageFile imageFile = files.get(position);
+	        ShareFile shareFile = files.get(position);
 	  
-	        if (!mBusy) {  
-	            mImageLoader.DisplayImage(imageFile.getPath(), viewHolder.mFileImageIV, false);  
-	            viewHolder.mFileSizeTV.setText("--" + position  
-	                    + "--IDLE ||TOUCH_SCROLL");  
-	        } else {  
-	            mImageLoader.DisplayImage(imageFile.getPath(), viewHolder.mFileImageIV, true);          
-	            viewHolder.mFileSizeTV.setText("--" + position + "--FLING");  
-	        }  
-	        viewHolder.mFileNameTV.setText(imageFile.getName());
-	        float size = imageFile.getSize();
+	        switch (shareFile.getType()) {
+	        case 0:
+	        	if (!mBusy) {  
+		            mImageLoader.DisplayImage(shareFile.getPath(), viewHolder.mFileImageIV, false);  
+		            viewHolder.mFileSizeTV.setText("--" + position  
+		                    + "--IDLE ||TOUCH_SCROLL");  
+		        } else {  
+		            mImageLoader.DisplayImage(shareFile.getPath(), viewHolder.mFileImageIV, true);          
+		            viewHolder.mFileSizeTV.setText("--" + position + "--FLING");  
+		        }  
+	        	break;
+	        case 1:
+	        	viewHolder.mFileImageIV.setImageResource(R.drawable.ic_music);
+				break;
+			case 2:
+				viewHolder.mFileImageIV.setImageResource(R.drawable.ic_video);
+				break;
+	        default:
+	        	break;
+	        }
+	        
+	        viewHolder.mFileNameTV.setText(shareFile.getName());
+	        float size = shareFile.getSize();
 	        
 	        // set value of size text view according size value. 
 	        if (size <= 512) {
@@ -99,7 +112,7 @@ public class ReceivedFilesAdapter extends BaseAdapter {
 				viewHolder.mFileSizeTV.setText(new  DecimalFormat(".##").format(size) + " MB");
 			}
 	        
-	        viewHolder.mReceivedTimeTV.setText(imageFile.getTime().format("%Y-%m-%d %H:%M:%S"));
+	        viewHolder.mReceivedTimeTV.setText(shareFile.getTime().format("%Y-%m-%d %H:%M:%S"));
 	        return convertView;  
 	}
 	

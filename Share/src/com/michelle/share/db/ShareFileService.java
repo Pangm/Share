@@ -3,63 +3,65 @@ package com.michelle.share.db;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.michelle.share.ImageFile;
+import com.michelle.share.ShareFile;
 
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.text.format.Time;
 
-public class ImageFileService {
+public class ShareFileService {
 	private DBOpenHelper dbOpenHelper;
 	
-	public ImageFileService(Context context) {
+	public ShareFileService(Context context) {
         dbOpenHelper = new DBOpenHelper(context, "share.db", 1);  
     }  
   
-    public void save(ImageFile imageFile) {  
+    public void save(ShareFile shareFile) {  
         SQLiteDatabase database = dbOpenHelper.getWritableDatabase();  
         database.beginTransaction();  
-        database.execSQL("insert into imagefile(name, size, path, time)values(?,?,?,?)",  
+        database.execSQL("insert into sharefile(name, size, path, time, type)values(?,?,?,?,?)",  
                 new Object[] { 
-		    		imageFile.getName(), 
-		    		imageFile.getSize(), 
-		    		imageFile.getPath(),
-		    		imageFile.getTime().format2445()});  
-        // database.close();可以不关闭数据库，他里面会缓存一个数据库对象，如果以后还要用就直接用这个缓存的数据库对象。但通过  
-        // context.openOrCreateDatabase(arg0, arg1, arg2)打开的数据库必须得关闭  
+		    		shareFile.getName(), 
+		    		shareFile.getSize(), 
+		    		shareFile.getPath(),
+		    		shareFile.getTime().format2445(),
+		    		shareFile.getType()});  
         database.setTransactionSuccessful();  
         database.endTransaction();  
   
     }  
   
-    public void update(ImageFile imageFile) {  
+    public void update(ShareFile shareFile) {  
         SQLiteDatabase database = dbOpenHelper.getWritableDatabase();  
         database.execSQL(  
-                "update imagefile set name=?,size=?,path=?,time=? where imagefileid=?",  
+                "update sharefile set name=?,size=?,path=?,time=?,type=? where sharefileid=?",  
                 new Object[] { 
-                		imageFile.getName(), 
-    		    		imageFile.getSize(), 
-    		    		imageFile.getPath(),
-    		    		imageFile.getTime().format2445(),
-    		    		imageFile.getId()});  
+                		shareFile.getName(), 
+    		    		shareFile.getSize(), 
+    		    		shareFile.getPath(),
+    		    		shareFile.getTime().format2445(),
+    		    		shareFile.getType(),
+    		    		shareFile.getId()});  
     }  
   
-    public ImageFile find(int id) {  
+    public ShareFile find(int id) {  
         SQLiteDatabase database = dbOpenHelper.getReadableDatabase();  
         Cursor cursor = database.rawQuery(  
-                "select * from imagefile where imagefileid=?",  
+                "select * from sharefile where sharefileid=?",  
                 new String[] { String.valueOf(id) }); 
         
         if (cursor.moveToNext()) {  
         	Time time = new Time();
             time.parse(cursor.getString(4));
-            return new ImageFile(
+            ShareFile shareFile = new ShareFile(
             		cursor.getInt(0),
             		cursor.getString(1),
             		cursor.getFloat(2),
             		cursor.getString(3),
             		time);
+            shareFile.setType(cursor.getInt(5));
+            return shareFile;
         }  
         return null;  
     }  
@@ -73,27 +75,29 @@ public class ImageFileService {
             sb.deleteCharAt(sb.length() - 1);  
             SQLiteDatabase database = dbOpenHelper.getWritableDatabase();  
             database.execSQL(  
-                    "delete from imagefile where imagefileid in(" + sb.toString()  
+                    "delete from sharefile where sharefileid in(" + sb.toString()  
                             + ")", ids);  
         }  
     }  
   
-    public List<ImageFile> getScrollData(int startResult, int maxResult) {  
-        List<ImageFile> imageFiles = new ArrayList<ImageFile>();  
+    public List<ShareFile> getScrollData(int startResult, int maxResult) {  
+        List<ShareFile> imageFiles = new ArrayList<ShareFile>();  
         SQLiteDatabase database = dbOpenHelper.getReadableDatabase();  
         Cursor cursor = database.rawQuery(  
-                "select * from imagefile limit ?,?",  
+                "select * from sharefile limit ?,?",  
                 new String[] { String.valueOf(startResult),  
                         String.valueOf(maxResult) });  
         while (cursor.moveToNext()) {  
         	Time time = new Time();
             time.parse(cursor.getString(4));
-        	imageFiles.add(new ImageFile(
+            ShareFile shareFile = new ShareFile(
             		cursor.getInt(0),
             		cursor.getString(1),
             		cursor.getFloat(2),
             		cursor.getString(3),
-            		time));  
+            		time);
+            shareFile.setType(cursor.getInt(5));
+        	imageFiles.add(shareFile);  
         }  
         return imageFiles;  
     }  
@@ -103,7 +107,7 @@ public class ImageFileService {
       //  List<ImageFile> imageFiles = new ArrayList<ImageFile>();  
         SQLiteDatabase database = dbOpenHelper.getReadableDatabase();  
         return database.rawQuery(  
-                "select imagefileid as _id ,name,size,path,time from imagefile limit ?,?",  
+                "select sharefileid as _id ,name,size,path,time,type from sharefile limit ?,?",  
                 new String[] { String.valueOf(startResult),  
                         String.valueOf(maxResult) });  
   
@@ -111,7 +115,7 @@ public class ImageFileService {
 
     public long getCount() {  
         SQLiteDatabase database = dbOpenHelper.getReadableDatabase();  
-        Cursor cursor = database.rawQuery("select count(*) from imagefile", null);  
+        Cursor cursor = database.rawQuery("select count(*) from sharefile", null);  
         if (cursor.moveToNext()) {  
             return cursor.getLong(0);  
         }  

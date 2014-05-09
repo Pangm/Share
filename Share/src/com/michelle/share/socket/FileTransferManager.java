@@ -14,7 +14,7 @@ import java.net.Socket;
 import java.util.Arrays;
 
 import com.michelle.share.Contact;
-import com.michelle.share.ImageFile;
+import com.michelle.share.ShareFile;
 import com.michelle.share.ShareApplication;
 
 import android.content.ContentResolver;
@@ -94,7 +94,7 @@ public class FileTransferManager implements Runnable {
 					Time time = new Time();
 					time.setToNow();
 					
-					ImageFile imageFile = new ImageFile(name, size, path, time);
+					ShareFile imageFile = new ShareFile(name, size, path, time);
 					imageFile.setType(fileType);
 					
 					// Send the obtained file to the UI Activity
@@ -107,7 +107,7 @@ public class FileTransferManager implements Runnable {
 					try {
 						int byteCount = -1;
 						int receivedCount = 0;
-						byte buf[] = new byte[1024 * 60];
+						byte buf[] = new byte[1024 * 512];
 						while ((byteCount = dataInputStream.readInt()) != 0) {
 							dataInputStream.readFully(buf, 0, byteCount);
 							out.write(buf, 0, byteCount);
@@ -116,6 +116,7 @@ public class FileTransferManager implements Runnable {
 							handler.obtainMessage(ShareChatService.FILE_READ_PART, receivedCount,
 									fileSize, name).sendToTarget();
 						}
+						handler.obtainMessage(ShareChatService.FILE_RECEIVED_COMPLETED, name).sendToTarget();
 						out.close();
 					} catch (IOException e) {
 						Log.d(FileTransferManager.TAG, e.toString());

@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 import android.text.format.Time;
 
-public class ImageFile implements Serializable{
+public class ShareFile implements Serializable{
 	/**
 	 * 
 	 */
@@ -16,12 +16,12 @@ public class ImageFile implements Serializable{
 	private Time time;
 	private int type;
 	
-	public ImageFile(int id, String name, float size, String path, Time time) {
+	public ShareFile(int id, String name, float size, String path, Time time) {
 		super();
 		imageFile(id, name, size, path, time);
 	}
 	
-	public ImageFile(String name, float size, String path, Time time) {
+	public ShareFile(String name, float size, String path, Time time) {
 		imageFile(0, name, size, path, time);
 	}
 	
