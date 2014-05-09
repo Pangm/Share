@@ -8,6 +8,7 @@ import java.util.Vector;
 
 import com.michelle.share.FriendsFragment.DeviceActionListener;
 import com.michelle.share.UserInfoFragment.UserInfoFragListener;
+import com.michelle.share.db.ShareFileService;
 import com.michelle.share.socket.ShareChatService;
 import com.michelle.share.socket.ShareChatService.MyBinder;
 
@@ -385,10 +386,17 @@ public class MainActivity extends FragmentActivity implements
 			mUserInfoFrag = (UserInfoFragment) fragment;
 		} else if (fragment.getClass() == HistoryFilesFragment.class) {
 			mHistoryFilesFrag = (HistoryFilesFragment) fragment;
+			ReceivedFilesBroadcastReceiver myReceiver = new ReceivedFilesBroadcastReceiver(mHistoryFilesFrag);
+			IntentFilter filter = new IntentFilter();
+			filter.addAction("android.intent.action.FILE_RECEIVE");
+			
+			registerReceiver(myReceiver,filter);
 		}
 		registerReceiver(receiver, intentFilter);
 		super.onAttachFragment(fragment);
 	}
+	
+	
 
 	public FriendsFragment getFriendsFrag() {
 
@@ -768,5 +776,27 @@ public class MainActivity extends FragmentActivity implements
 	public void onTabChanged(String tabId) {
 		int pos = this.mTabHost.getCurrentTab();
 		this.mViewPager.setCurrentItem(pos);
+	}
+	
+	public class ReceivedFilesBroadcastReceiver extends BroadcastReceiver {
+
+		private HistoryFilesFragment fragement;
+		
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			System.out.println("OnReceiver");
+
+			if (intent.getAction().equals("android.intent.action.FILE_RECEIVE")) {
+				// notify receive a message. 
+				if (fragement != null) {
+					fragement.UpdateAdapterData();
+				} 
+			}
+		}
+
+		public ReceivedFilesBroadcastReceiver(HistoryFilesFragment fragement) {
+			this.fragement = fragement;
+			System.out.println("ReceivedFilesBroadcastReceiver");
+		}
 	}
 }

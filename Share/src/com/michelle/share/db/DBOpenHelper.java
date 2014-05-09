@@ -14,13 +14,13 @@ public class DBOpenHelper extends SQLiteOpenHelper {
 
 	@Override
 	public void onCreate(SQLiteDatabase db) {
-		db.execSQL("CREATE TABLE IF NOT EXISTS imagefile "
-				+ "(imagefileid INTEGER PRIMARY KEY AUTOINCREMENT, name, size, path, time)");
+		db.execSQL("CREATE TABLE IF NOT EXISTS sharefile "
+				+ "(sharefileid INTEGER PRIMARY KEY AUTOINCREMENT, name, size, path, time, type)");
 	}
 
 	@Override
 	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-		db.execSQL("DROP TABLE IF EXISTS person");  
+		db.execSQL("DROP TABLE IF EXISTS sharefile");  
         onCreate(db); 
 	}
 

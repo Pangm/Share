@@ -5,11 +5,14 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import com.michelle.share.db.ImageFileService;
+import com.michelle.share.ChatActivity.MyReceiver;
+import com.michelle.share.db.ShareFileService;
 
 import android.app.Activity;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -58,11 +61,16 @@ public class HistoryFilesFragment extends Fragment {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		ImageFileService imageFileService = new ImageFileService(this.getActivity());
+		ShareFileService shareFileService = new ShareFileService(this.getActivity());
         final LayoutInflater mInflater = getLayoutInflater(savedInstanceState);//inflater ;
         receivedFilesAdapter = new ReceivedFilesAdapter(this.getActivity(), 
-        		imageFileService.getScrollData(0, 10));
+        		shareFileService.getScrollData(0, 10));
         
+//        ReceivedFilesBroadcastReceiver myReceiver = new ReceivedFilesBroadcastReceiver();
+//		IntentFilter filter = new IntentFilter();
+//		filter.addAction("android.intent.action.FILE_RECEIVE");
+//		
+//		registerReceiver(myReceiver,filter);
         
 	}
 
@@ -80,36 +88,51 @@ public class HistoryFilesFragment extends Fragment {
             public void onItemClick(AdapterView<?> parent, View view,  
                     int position, long id) {  
                 ListView listView = (ListView) parent;
-                ImageFile imageFile = (ImageFile) parent.getItemAtPosition(position);  
-                String name = imageFile.getName();
-                String path = imageFile.getPath();
+                ShareFile shareFile = (ShareFile) parent.getItemAtPosition(position);  
+                String name = shareFile.getName();
+                String path = shareFile.getPath();
                 Log.i(TAG, view.getClass().getName()); 
                 
                 try {
 					Intent intent = new Intent();
 					intent.setAction(android.content.Intent.ACTION_VIEW);
-					intent.setDataAndType(Uri.parse("file://" + path), "image/*");
+					
+					switch (shareFile.getType()) {
+					case 0:
+						intent.setDataAndType(Uri.parse("file://" + path),
+								"image/*");
+						break;
+					case 1:
+						intent.setDataAndType(Uri.parse("file://" + path),
+								"audio/*");
+						break;
+					case 2:
+						intent.setDataAndType(Uri.parse("file://" + path),
+								"video/*");
+						break;
+					}
+					
 					startActivity(intent);
                 } catch (Exception e) {
                 	Toast.makeText(getActivity(), "对不起， " + name + " 已被删除。", Toast.LENGTH_LONG).show(); 
                 }
             }
         });
-        final ImageFileService imageFileService = new ImageFileService(this.getActivity());
+        final ShareFileService shareFileService = new ShareFileService(this.getActivity());
         listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
 
 			@Override
 			public boolean onItemLongClick(AdapterView<?> parent, View view,
 					int position, long id) {
 				ListView listView = (ListView) parent;
-                ImageFile imageFile = (ImageFile) parent.getItemAtPosition(position);
+                ShareFile shareFile = (ShareFile) parent.getItemAtPosition(position);
                 
-                File file = new File(imageFile.getPath());
+                File file = new File(shareFile.getPath());
                 
                 if (file.exists() && file.isFile() && file.delete()) {
-        			Toast.makeText(getActivity(), imageFile.getName() + " 已被删除。", Toast.LENGTH_LONG).show();
-        			imageFileService.delete(imageFile.getId());
-                    receivedFilesAdapter.Update(imageFileService.getScrollData(0, 10));
+        			Toast.makeText(getActivity(), shareFile.getName() + " 已被删除。", Toast.LENGTH_LONG).show();
+        			shareFileService.delete(shareFile.getId());
+                    receivedFilesAdapter.Update(shareFileService.getScrollData(0, 10));
                 }
                 
 				return true;
@@ -118,4 +141,11 @@ public class HistoryFilesFragment extends Fragment {
         return rootView;
         
 	}
+	
+	public void UpdateAdapterData() {
+		ShareFileService shareFileService = new ShareFileService(this.getActivity());
+		receivedFilesAdapter.Update(shareFileService.getScrollData(0, 10));
+	}
+	
+	
 }

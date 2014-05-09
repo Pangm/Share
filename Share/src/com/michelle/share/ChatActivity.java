@@ -182,13 +182,13 @@ public class ChatActivity extends Activity implements IOnRefreshListener,
 
 				Object content = msg.getContent();
 
-				if (content instanceof ImageFile) {
-					String path = ((ImageFile) content).getPath();
+				if (content instanceof ShareFile) {
+					String path = ((ShareFile) content).getPath();
 					try {
 						Intent intent = new Intent();
 						intent.setAction(android.content.Intent.ACTION_VIEW);
 						
-						switch (((ImageFile) content).getType()) {
+						switch (((ShareFile) content).getType()) {
 						case 0:
 							intent.setDataAndType(Uri.parse("file://" + path),
 									"image/*");
@@ -590,7 +590,7 @@ public class ChatActivity extends Activity implements IOnRefreshListener,
 				chatData.remove(chatData.getLast());
 				int value = intent.getIntExtra("value", 100);
 				try {
-					ImageFile file = (ImageFile) intent.getSerializableExtra("file");
+					ShareFile file = (ShareFile) intent.getSerializableExtra("file");
 					Time time = new Time();
 					time.setToNow();
 					file.setTime(time);

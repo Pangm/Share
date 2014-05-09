@@ -6,8 +6,8 @@ import java.util.List;
 import com.michelle.share.ChatMessage;
 import com.michelle.share.Contact;
 import com.michelle.share.FriendsFragment.MessageTarget;
-import com.michelle.share.ImageFile;
-import com.michelle.share.db.ImageFileService;
+import com.michelle.share.ShareFile;
+import com.michelle.share.db.ShareFileService;
 import com.michelle.share.ShareApplication;
 
 import android.app.Service;
@@ -34,11 +34,13 @@ public class ShareChatService extends Service implements Handler.Callback,
 	public static final int CONTACT_TRANSFER_HANDLE = 0x400 + 6;
 	public static final int CONTACT_READ = 0x400 + 7;
 	public static final int FILE_READ_PART = 0x400 + 8;
+	public static final int FILE_RECEIVED_COMPLETED = 0x400 + 9;
 	
 	static final int SERVER_PORT = 4545;
 	static final int SERVER_FILE_PORT = 4546;
 	static final int SERVER_CONTACT_PORT = 4547;
 	private static final String TAG = "Share ChatSevice";
+	
 	
 	private ChatManager chatManager = null;
 	private FileTransferManager fileTransferManager = null;
@@ -95,7 +97,7 @@ public class ShareChatService extends Service implements Handler.Callback,
 			((ShareApplication) getApplication()).getMessages().add(chatMsg);
 			
 			try {
-				ImageFile imageFile = (ImageFile) msg.obj;
+				ShareFile imageFile = (ShareFile) msg.obj;
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -114,8 +116,8 @@ public class ShareChatService extends Service implements Handler.Callback,
 			List<ChatMessage> messages = ((ShareApplication) getApplication()).getMessages();
 
 			for(ChatMessage chatMsgTmp : messages) {
-				if (chatMsgTmp.getContent() instanceof ImageFile
-						&& ((ImageFile) chatMsgTmp.getContent()).getName().equals(fileName)) {
+				if (chatMsgTmp.getContent() instanceof ShareFile
+						&& ((ShareFile) chatMsgTmp.getContent()).getName().equals(fileName)) {
 					chatMsg = chatMsgTmp;
 					break;
 				}
@@ -128,26 +130,42 @@ public class ShareChatService extends Service implements Handler.Callback,
 						bar.setProgress(progressValue);
 						bar.notify();
 					}
-					if (receivedCount == fileCount) {
-						chatMsg.setProgressValue(100);
-						intent = new Intent();
-						intent.setAction("android.intent.action.FILE_RECEIVE_COMPLETED");
-						sendBroadcast(intent);
-//						ImageFileService imageFileService = new ImageFileService(this);
-//						imageFileService.save((ImageFile) chatMsg.getContent());
-					}
-//					intent = new Intent();
-//					intent.putExtra("value", progressValue);
-//					ImageFile file = (ImageFile) chatMsg.getContent();
-//					file.setTime(null);
-//					intent.putExtra("file", (ImageFile) chatMsg.getContent());
-//					intent.setAction("android.intent.action.MSG_RECEIVE_PART");// action与接收器相同
-//					sendBroadcast(intent);
+//					if (receivedCount == fileCount) {
+//						chatMsg.setProgressValue(100);
+//						intent = new Intent();
+//						intent.setAction("android.intent.action.FILE_RECEIVE_COMPLETED");
+//						sendBroadcast(intent);
+//						ShareFileService shareFileService = new ShareFileService(this);
+//						shareFileService.save((ShareFile) chatMsg.getContent());
+//					}
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
 				
 			}		
+			break;
+		case FILE_RECEIVED_COMPLETED:
+			chatMsg = null;
+			String name = (String) msg.obj;
+			List<ChatMessage> msgs = ((ShareApplication) getApplication()).getMessages();
+
+			for(ChatMessage chatMsgTmp : msgs) {
+				if (chatMsgTmp.getContent() instanceof ShareFile
+						&& ((ShareFile) chatMsgTmp.getContent()).getName().equals(name)) {
+					chatMsg = chatMsgTmp;
+					break;
+				}
+			}
+			
+			if (chatMsg != null) {
+				chatMsg.setProgressValue(100);
+				intent = new Intent();
+				intent.setAction("android.intent.action.FILE_RECEIVE_COMPLETED");
+				sendBroadcast(intent);
+				ShareFileService shareFileService = new ShareFileService(this);
+				shareFileService.save((ShareFile) chatMsg.getContent());
+			}
+			
 			break;
 		case CONTACT_READ:
 			Contact Contact = (Contact) msg.obj;

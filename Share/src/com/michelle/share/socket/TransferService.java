@@ -13,7 +13,7 @@ import java.util.List;
 import com.michelle.share.ChatActivity;
 import com.michelle.share.ChatMessage;
 import com.michelle.share.Contact;
-import com.michelle.share.ImageFile;
+import com.michelle.share.ShareFile;
 import com.michelle.share.ShareApplication;
 
 import android.app.IntentService;
@@ -91,7 +91,7 @@ public class TransferService extends IntentService {
                 }
                 
                 time.setToNow();
-                ImageFile imageFile = new ImageFile(fileName, fileSize, filePath, time);
+                ShareFile imageFile = new ShareFile(fileName, fileSize, filePath, time);
                 
                 //
                 imageFile.setType(fileType);
@@ -105,7 +105,7 @@ public class TransferService extends IntentService {
     			sendBroadcast(intent);
     			
     			// write the file content
-                byte buf[] = new byte[1024 * 60];
+                byte buf[] = new byte[1024 * 512];
         		int byteCount = 0;
         		try {
         			while ((byteCount = iStream.read(buf)) != -1) {
